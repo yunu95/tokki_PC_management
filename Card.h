@@ -1,5 +1,7 @@
 #pragma once
 #include "User.h"
+
+// Card는 데이터베이스와 연동될 필요가 없습니다.
 class Card :
 	public User
 {
