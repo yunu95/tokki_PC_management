@@ -8,7 +8,7 @@ private:
 	int card_number;
 	// 비회원 사용자의 남은 시간을 표시합니다.
 	float left_time;
-public:
+public: //
 	Card();
 	~Card();
 };
