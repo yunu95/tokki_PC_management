@@ -11,7 +11,7 @@ private:
 	// 비회원 사용자의 남은 시간을 표시합니다.
 	float left_time;
 public: //
-	Card(const int& _card_number, float _left_time); // 생성자 - 멤버변수를 초기화 합니다.
+	Card(const int& _card_number, float& _left_time); // 생성자 - 멤버변수를 초기화 합니다.
 	~Card(); // 소멸자
 };
 
