@@ -9,6 +9,7 @@ private:
 	PCManager();
 	~PCManager();
 	static PCManager* instance;
+	std::vector<std::string> commandsList;
 	// 모든 pc들의 인스턴스들은 pcs에 들어있습니다.
 	std::vector<class PC*> pcs;
 	// 모든 Card들의 인스턴스들은 cards에 들어있습니다.
@@ -23,5 +24,7 @@ public:
 	void RechargeTime(const Card& target, const float& seconds);
 	// 로그인하는 회원이용자의 사용시간을 추가합니다.
 	void RechargeTime(const Member& target, const float& seconds);
-
+	// it initiates every initialization and activate terminal  
+	void Initialize();
+	bool QueryNextAction();
 };
