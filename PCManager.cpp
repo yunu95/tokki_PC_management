@@ -2,13 +2,15 @@
 #include <string>
 #include <vector>
 #include "PCManager.h"
+#include "Card.h"
+#include "Member.h"
 
-PCManager* PCManager::instance = nullptr;;
+PCManager* PCManager::instance = nullptr;; 
 PCManager* PCManager::GetInstance() {
 	if (instance)
 		return instance;
 	else
-		return instance = new PCManager();
+		return instance = new PCManager(); 
 }
 
 PCManager::PCManager()
@@ -19,6 +21,8 @@ PCManager::PCManager()
 	commandsList.push_back(std::string("Status"));
 	commandsList.push_back(std::string("Quit"));
 
+	
+	cards.push_back(std::string("1"));
 }
 
 
@@ -58,3 +62,20 @@ bool PCManager::QueryNextAction() {
 void PCManager::Initialize() {
 	while (QueryNextAction());
 }
+
+void PCManager::RechargeTime(const Card& target, const float& seconds)
+	{
+
+		// 손놈 : 카드 번호랑 시간 줄테니까 더해와 
+		// 직원 : 네 카드번호가 target번이니까 잠시만요 , cards벡터에서 target번째를 꺼내고 
+		//거기에 있는 left_time에 seconds를 더해서 갱신할게요.
+
+	}
+
+void PCManager::RechargeTime(const Member& target, const float& seconds)
+	{
+		// 멤버 아이디를 요구하고, 아이디 정보를 DB에서 불러옵니다. 
+		
+
+		// 정보에 있는 left_time에 seconds를 더해서 갱신합니다.
+	}

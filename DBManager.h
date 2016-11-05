@@ -15,6 +15,8 @@ private:
 	static DBManager* instance;
 public:
 	class Member;
+	
+	/*
 	// 데이터베이스에 해당 id,password를 만족하는 사용자가 있는지 확인한다.
 	bool Login(std::string id,std::string password);
 	// 데이터베이스에 info와 같은 정보를 가지는 튜플이 없다면 참을 반환한다.
@@ -24,6 +26,8 @@ public:
 	// DB의 회원의 정보를 키값을 통해 가져와 Member자료형으로 반환한다.
 	Member GetMemberinfo(int key);
 	// DB에 있는 회원의 정보를 업데이트한다. 실패하면 false를 반환한다.
+	*/
+	
 	bool UpdateMemberinfo(const Member& info);
 	// 싱글톤 객체의 유일한 인스턴스를 참조하기 위해 쓰이는 Getter메서드.
 	static DBManager* GetInstance();
