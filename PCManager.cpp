@@ -3,7 +3,7 @@
 #include <vector>
 #include "PCManager.h"
 #include "Card.h"
-#include "Member.h"
+#include "Member.h" // 클래스
 
 PCManager* PCManager::instance = nullptr;; 
 PCManager* PCManager::GetInstance() {
@@ -12,6 +12,7 @@ PCManager* PCManager::GetInstance() {
 	else
 		return instance = new PCManager(); 
 }
+// 싱글톤 패턴을 구현하는 부분입니다. 
 
 PCManager::PCManager()
 {
@@ -22,7 +23,7 @@ PCManager::PCManager()
 	commandsList.push_back(std::string("Quit"));
 
 	
-	cards.push_back(std::string("1"));
+	cards.push_back(Card::string("1"));
 }
 
 
@@ -79,3 +80,9 @@ void PCManager::RechargeTime(const Member& target, const float& seconds)
 
 		// 정보에 있는 left_time에 seconds를 더해서 갱신합니다.
 	}
+
+void PCManager::LoadPCinfos()
+{
+	//
+
+}
