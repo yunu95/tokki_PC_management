@@ -27,7 +27,7 @@ PCManager::PCManager()
 	// 손님이 카드를 요구하면 카드 객체를 생성해 그 레퍼런스를 벡터 안에 집어넣습니다. 카드의 번호는 1부터 순서대로 생성됩니다.
 	// 카드 객체는 (번호,시간) 인데 시간 어쩌냐;	
 	
-	//cards.push_back();
+	cards.push_back(new Card(1,0));
 	// 손님이 PC를 이용하게 되면 그 PC 객체를 생성해 그 레퍼런스를 벡터 안에 집어넣습니다.
 	//pcs.push_back();
 	// 손님이 멤버인 경우는 데이터 베이스에서 불러오게 됩니다.
@@ -35,9 +35,8 @@ PCManager::PCManager()
 	// 어떻게 벡터에 집어넣지?
 	
 }
-
+// 여기는 프로그램이 실행되는 공간이 아님. 단지 필드일 뿐
 Card c1(0, 0.0f);
-// cards.push_back(Card);
 
 Card c2(0, 0.0f);
 Card c3(0, 0.0f);
@@ -73,6 +72,7 @@ bool PCManager::QueryNextAction() {
 		if (command == "checkout")
 			return true;
 		if (command == "status")
+			// 
 			return true;
 		if (command == "quit")
 			return false;
@@ -116,7 +116,7 @@ void PCManager::LoadPCinfos()
 	inputFile.close();
 }
 
-void PCManager::SearchCard(const int& CardName)
+Card* PCManager::SearchCard(const int& CardName)
 {
 	
 	// Cards 벡터에서 각 Card.card_number의 값을 탐색하고 맞다면 그 카드 객체를 반환. 
@@ -124,5 +124,8 @@ void PCManager::SearchCard(const int& CardName)
 	// iterator를 사용합니다.
 
 	//retrun card_object;
+
+	//임시방편.
+	return nullptr;
 }
 

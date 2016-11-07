@@ -6,6 +6,11 @@
 모든 PC 객체들의 인스턴스들을 포함하고 있다. PC방의 카운터 PC에 해당되는 객체이다. - 싱글톤 패턴 적용.
 */
 
+// 아래의 클래스 선언은 클래스 전방선언입니다.
+class Card;
+class Member;
+class PC;
+
 class PCManager
 {
 private:
@@ -22,11 +27,6 @@ private:
 	float PlusTime;
 	int CardNumber;
 public:
-	// 아래의 클래스 선언은 클래스 전방선언입니다.
-	class Card;
-	class Member;
-	class PC;
-
 	std::thread Updater; // 매 초마다 LoadPCinfos()를 호출하고, 각 PC들의 상태를 업데이트하는 thread
 	static PCManager *GetInstance(); // 정적 메서드로서, 클래스의 객체를 만들 때 사용합니다.
 	//아래에 선언된 RechargeTime 메서드들를 정의하려면 method overloading에 대한 지식이 필요합니다.
@@ -38,5 +38,5 @@ public:
 	void Initialize();
 	bool QueryNextAction(); // 사용자에게 명령어를 요구하고, 입력된 명령어에 대응하는 메서드를 실행합니다.
 	void LoadPCinfos(); // PC방에 있는 PC들의 정보를 파일에서 읽어 옵니다.
-	void SearchCard(const int& CardName); // 카드 번호와 맞는 카드를 반환하는 함수. - 설계에 추가 요망
+	Card* SearchCard(const int& CardName); // 카드 번호와 맞는 카드를 반환하는 함수. - 설계에 추가 요망
 };
