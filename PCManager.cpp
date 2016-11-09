@@ -27,6 +27,7 @@ PCManager::PCManager()
 	// 손님이 카드를 요구하면 카드 객체를 생성해 그 레퍼런스를 벡터 안에 집어넣습니다. 카드의 번호는 1부터 순서대로 생성됩니다.
 	// 카드 객체는 (번호,시간) 인데 시간 어쩌냐;	
 	
+	for(int i; ;i++)
 	cards.push_back(new Card(1,0));
 	// 손님이 PC를 이용하게 되면 그 PC 객체를 생성해 그 레퍼런스를 벡터 안에 집어넣습니다.
 	//pcs.push_back();
@@ -70,9 +71,10 @@ bool PCManager::QueryNextAction() {
 			//RechargeTime(const Member& target, const float& seconds)
 			return true;
 		if (command == "checkout")
+			// 카드를 다시 벡터에 집어넣는다.
 			return true;
 		if (command == "status")
-			// 
+			// 카드의 정보를 초기화한다. 남은 시간을 0으로 바꾼다.
 			return true;
 		if (command == "quit")
 			return false;
