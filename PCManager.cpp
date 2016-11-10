@@ -24,24 +24,22 @@ PCManager::PCManager()
 	commandsList.push_back(std::string("Status"));
 	commandsList.push_back(std::string("Quit")); 
 
-	// 손님이 카드를 요구하면 카드 객체를 생성해 그 레퍼런스를 벡터 안에 집어넣습니다. 카드의 번호는 1부터 순서대로 생성됩니다.
-	// 카드 객체는 (번호,시간) 인데 시간 어쩌냐;	
+	// 카드 객체를 미리 생성해 cards 벡터 안에 집어넣습니다. 카드의 번호는 1부터 순서대로 생성됩니다.	
 	
-	for(int i; ;i++)
-	cards.push_back(new Card(1,0));
-	// 손님이 PC를 이용하게 되면 그 PC 객체를 생성해 그 레퍼런스를 벡터 안에 집어넣습니다.
-	//pcs.push_back();
+	for(int i=1;i < 101 ;i++)
+	cards.push_back(new Card(i,0));
+
+	// PC 객체는 이미 생성된 상태겠지요. 100개가 있다고 가정하고 벡터 안에 집어넣습니다.
+	for (int i = 1; i < 101; i++)
+	pcs.push_back(new PC()); 
+	
+	// Q. PC에도 번호가 있어야 하지 않는지?
+	
 	// 손님이 멤버인 경우는 데이터 베이스에서 불러오게 됩니다.
-	// 여기서 각 객체를 생성해야되는데 어떻게 하지? 그리고 함수를 만들어야 하나?
-	// 어떻게 벡터에 집어넣지?
+
 	
 }
 // 여기는 프로그램이 실행되는 공간이 아님. 단지 필드일 뿐
-Card c1(0, 0.0f);
-
-Card c2(0, 0.0f);
-Card c3(0, 0.0f);
-//반복문.. 이런식으로 싹 다 만들어 두고, 벡터에 집어넣습니다. 카드의 기본값은 100으로 하겠습니다.
 
 PCManager::~PCManager()
 {

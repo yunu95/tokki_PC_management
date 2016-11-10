@@ -4,6 +4,10 @@
 
 PC::PC()
 {
+	bool is_active = false;
+	bool is_power_on = false; 
+	class User* current_user = nullptr;
+	// 기본적으로 사용자가 없고 꺼져 있는 상태로 초기화 됩니다.
 }
 
 

@@ -38,5 +38,6 @@ public:
 	void Initialize();
 	bool QueryNextAction(); // 사용자에게 명령어를 요구하고, 입력된 명령어에 대응하는 메서드를 실행합니다.
 	void LoadPCinfos(); // PC방에 있는 PC들의 정보를 파일에서 읽어 옵니다.
-	Card* SearchCard(const int& CardName); // 카드 번호와 맞는 카드를 반환하는 함수. - 설계에 추가 요망
+	// Card* SearchCard(const int& CardName); // 카드 번호와 맞는 카드를 반환하는 함수. - 설계에 추가 요망
+	// 객체를 바로 집어넣는 것으로.
 };
