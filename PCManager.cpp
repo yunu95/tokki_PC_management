@@ -2,23 +2,34 @@
 #include <string>
 #include <vector>
 #include "PCManager.h"
+#include "DBManager.h"
+#include "Card.h"
+#include "Member.h"
 
+// these somesome codes below contain everything needed for singletone desgin pattern
+// this class pointer is the only instance of this class
 PCManager* PCManager::instance = nullptr;;
+
+// this method is used to get instance of this class
 PCManager* PCManager::GetInstance() {
+	//what this condition says is, just like this. instance != nullpointer
 	if (instance)
 		return instance;
 	else
+		// 1. constructor gets called just once
+		// 2. constructor exists in private field
 		return instance = new PCManager();
 }
 
+// initiates all the commands needed in terminal.
 PCManager::PCManager()
 {
+	cards.push_back(new Card(0));
 	commandsList.push_back(std::string("RechargeCard"));
 	commandsList.push_back(std::string("RechargeMember"));
 	commandsList.push_back(std::string("Checkout"));
 	commandsList.push_back(std::string("Status"));
 	commandsList.push_back(std::string("Quit"));
-
 }
 
 
@@ -35,16 +46,31 @@ bool PCManager::QueryNextAction() {
 	cout << "\n";
 	string command;
 	getline(cin, command);
-	for (string each : commandsList) {
-		// ÀÔ·ÂµÈ ¸í·É¾î¸¦ ¸ðµÎ ¼Ò¹®ÀÚ·Î ¹Ù²ãÁØ´Ù.
-		for (string::iterator EachChar = command.begin(); EachChar < command.end();EachChar++)
+	for (string each : commandsList) 
+	{
+		// ìž…ë ¥ëœ ëª…ë ¹ì–´ë¥¼ ëª¨ë‘ ì†Œë¬¸ìžë¡œ ë°”ê¿”ì¤€ë‹¤.
+		for (string::iterator EachChar = command.begin(); EachChar < command.end(); EachChar++)
 			*EachChar = tolower(*EachChar);
 
-		// Ä¿¸Çµå¿¡ µû¶ó ÇÊ¿äÇÑ ÇÔ¼ö¸¦ È£ÃâÇÑ´Ù.
+		// ì»¤ë§¨ë“œì— ë”°ë¼ í•„ìš”í•œ í•¨ìˆ˜ë¥¼ í˜¸ì¶œí•œë‹¤.
 		if (command == "rechargecard")
+		{
+			int card_num;
+			float time;
+			cin >> card_num;
+			cin >> time;
+			RechargeTime(*cards[card_num],time);
 			return true;
-		if (command == "rechargemember")
+		}
+		if (command == "rechargemember") 
+		{
+			string id;
+			float time;
+			cin >> id;
+			cin >> time;
+			RechargeTime(*DBManager::GetInstance()->GetMemberinfo(id), time);
 			return true;
+		}
 		if (command == "checkout")
 			return true;
 		if (command == "status")
@@ -55,6 +81,17 @@ bool PCManager::QueryNextAction() {
 	cout << "UnIdentified Command\n";
 	return true;
 }
-void PCManager::Initialize() {
+void PCManager::Initialize() 
+{
 	while (QueryNextAction());
+}
+
+void::PCManager::RechargeTime(Card& target, const float& seconds) 
+{
+	target.SetLeftTime(target.GetLeftTime() + seconds);
+}
+void::PCManager::RechargeTime(Member& target, const float& seconds) 
+{
+	// below here should be placed socket programming things
+	// which means, Back to work! sung yeon!
 }

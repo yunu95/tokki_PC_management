@@ -1,8 +1,13 @@
 #pragma once
 #include <vector>
 /*
-¸ğµç PC °´Ã¼µéÀÇ ÀÎ½ºÅÏ½ºµéÀ» Æ÷ÇÔÇÏ°í ÀÖ´Ù. PC¹æÀÇ Ä«¿îÅÍ PC¿¡ ÇØ´çµÇ´Â °´Ã¼ÀÌ´Ù.
+ëª¨ë“  PC ê°ì²´ë“¤ì˜ ì¸ìŠ¤í„´ìŠ¤ë“¤ì„ í¬í•¨í•˜ê³  ìˆë‹¤. PCë°©ì˜ ì¹´ìš´í„° PCì— í•´ë‹¹ë˜ëŠ” ê°ì²´ì´ë‹¤.
 */
+
+// ì•„ë˜ì˜ í´ë˜ìŠ¤ ì„ ì–¸ì€ í´ë˜ìŠ¤ ì „ë°©ì„ ì–¸ì…ë‹ˆë‹¤.
+class Card;
+class Member;
+
 class PCManager
 {
 private:
@@ -10,20 +15,17 @@ private:
 	~PCManager();
 	static PCManager* instance;
 	std::vector<std::string> commandsList;
-	// ¸ğµç pcµéÀÇ ÀÎ½ºÅÏ½ºµéÀº pcs¿¡ µé¾îÀÖ½À´Ï´Ù.
+	// ëª¨ë“  pcë“¤ì˜ ì¸ìŠ¤í„´ìŠ¤ë“¤ì€ pcsì— ë“¤ì–´ìˆìŠµë‹ˆë‹¤.
 	std::vector<class PC*> pcs;
-	// ¸ğµç CardµéÀÇ ÀÎ½ºÅÏ½ºµéÀº cards¿¡ µé¾îÀÖ½À´Ï´Ù.
+	// ëª¨ë“  Cardë“¤ì˜ ì¸ìŠ¤í„´ìŠ¤ë“¤ì€ cardsì— ë“¤ì–´ìˆìŠµë‹ˆë‹¤.
 	std::vector<class Card*> cards;
 public:
-	// ¾Æ·¡ÀÇ Å¬·¡½º ¼±¾ğÀº Å¬·¡½º Àü¹æ¼±¾ğÀÔ´Ï´Ù.
-	class Card;
-	class Member;
 	static PCManager *GetInstance();
-	//¾Æ·¡¿¡ ¼±¾ğµÈ RechargeTime ¸Ş¼­µåµé¸¦ Á¤ÀÇÇÏ·Á¸é method overloading¿¡ ´ëÇÑ Áö½ÄÀÌ ÇÊ¿äÇÕ´Ï´Ù.
-	// ºñÈ¸¿ø Ä«µå ÀÌ¿ëÀÚÀÇ »ç¿ë½Ã°£À» Ãß°¡ÇÕ´Ï´Ù.
-	void RechargeTime(const Card& target, const float& seconds);
-	// ·Î±×ÀÎÇÏ´Â È¸¿øÀÌ¿ëÀÚÀÇ »ç¿ë½Ã°£À» Ãß°¡ÇÕ´Ï´Ù.
-	void RechargeTime(const Member& target, const float& seconds);
+	//ì•„ë˜ì— ì„ ì–¸ëœ RechargeTime ë©”ì„œë“œë“¤ë¥¼ ì •ì˜í•˜ë ¤ë©´ method overloadingì— ëŒ€í•œ ì§€ì‹ì´ í•„ìš”í•©ë‹ˆë‹¤.
+	// ë¹„íšŒì› ì¹´ë“œ ì´ìš©ìì˜ ì‚¬ìš©ì‹œê°„ì„ ì¶”ê°€í•©ë‹ˆë‹¤.
+	void RechargeTime( Card& target, const float& seconds);
+	// ë¡œê·¸ì¸í•˜ëŠ” íšŒì›ì´ìš©ìì˜ ì‚¬ìš©ì‹œê°„ì„ ì¶”ê°€í•©ë‹ˆë‹¤.
+	void RechargeTime(Member& target, const float& seconds);
 	// it initiates every initialization and activate terminal  
 	void Initialize();
 	bool QueryNextAction();

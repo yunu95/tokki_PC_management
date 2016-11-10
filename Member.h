@@ -1,22 +1,22 @@
 #pragma once
 #include "User.h"
 /*
-È¸¿ø°¡ÀÔÇØ¼­ ¾ÆÀÌµð¶û ºñ¹øÀÌ ¸ðµÎ ´Ù ÀÖ´Â User¸¦ Ç¥ÇöÇÕ´Ï´Ù.
-db¿¡ ÀÖ´Â Æ©ÇÃÀÇ Á¤º¸¸¦ ±×´ë·Î Å¬¶óÀÌ¾ðÆ® °´Ã¼·Î ´ëÀÀ½ÃÅ°±â À§ÇÑ Å¬·¡½ºÀÔ´Ï´Ù.
+íšŒì›ê°€ìž…í•´ì„œ ì•„ì´ë””ëž‘ ë¹„ë²ˆì´ ëª¨ë‘ ë‹¤ ìžˆëŠ” Userë¥¼ í‘œí˜„í•©ë‹ˆë‹¤.
+dbì— ìžˆëŠ” íŠœí”Œì˜ ì •ë³´ë¥¼ ê·¸ëŒ€ë¡œ í´ë¼ì´ì–¸íŠ¸ ê°ì²´ë¡œ ëŒ€ì‘ì‹œí‚¤ê¸° ìœ„í•œ í´ëž˜ìŠ¤ìž…ë‹ˆë‹¤.
 */
 class Member :
 	public User
 {
 private:
-	// »ç¿ëÀÚ¿¡°Ô ³²Àº ½Ã°£ÀÔ´Ï´Ù.
+	// ì‚¬ìš©ìžì—ê²Œ ë‚¨ì€ ì‹œê°„ìž…ë‹ˆë‹¤.
 	float left_time;
 public:
-	// Æ©ÇÃÀÇ Á¤º¸¸¦ ±×´ë·Î ¹ÞÀ¸¸é µË´Ï´Ù.
+	// íŠœí”Œì˜ ì •ë³´ë¥¼ ê·¸ëŒ€ë¡œ ë°›ìœ¼ë©´ ë©ë‹ˆë‹¤.
 	Member();
 	~Member();
 	class PC;
-	// ½Ã°£ÀÌ ´Ù µÇ¾úÀ» ¶§ ¹ßµ¿µÇ´Â ¸Þ¼­µåÀÔ´Ï´Ù. target PC¿¡°Ô °­Á¦Á¾·á¸¦ ¿äÃ»ÇÏ°í,
-	// DB¿¡¼­ ³²Àº ½Ã°£À» Â÷°¨ÇÏ´Â °Í ¶ÇÇÑ ¿äÃ»ÇØ¾ß ÇÕ´Ï´Ù.
+	// ì‹œê°„ì´ ë‹¤ ë˜ì—ˆì„ ë•Œ ë°œë™ë˜ëŠ” ë©”ì„œë“œìž…ë‹ˆë‹¤. target PCì—ê²Œ ê°•ì œì¢…ë£Œë¥¼ ìš”ì²­í•˜ê³ ,
+	// DBì—ì„œ ë‚¨ì€ ì‹œê°„ì„ ì°¨ê°í•˜ëŠ” ê²ƒ ë˜í•œ ìš”ì²­í•´ì•¼ í•©ë‹ˆë‹¤.
 	void AbortUsing(const PC& target);
 };
 
