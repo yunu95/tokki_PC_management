@@ -2,8 +2,9 @@
 
 
 
-PC::PC()
+PC::PC(const int& number)
 {
+	int PC_Number = number;
 	bool is_active = false;
 	bool is_power_on = false; 
 	class User* current_user = nullptr;

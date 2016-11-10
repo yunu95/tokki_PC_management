@@ -31,13 +31,14 @@ public:
 	static PCManager *GetInstance(); // 정적 메서드로서, 클래스의 객체를 만들 때 사용합니다.
 	//아래에 선언된 RechargeTime 메서드들를 정의하려면 method overloading에 대한 지식이 필요합니다.
 	// 비회원 카드 이용자의 사용시간을 추가합니다.
-	void RechargeTime(const Card& target, const float& seconds);
+	void RechargeTime(Card& target, const float& seconds);
 	// 로그인하는 회원이용자의 사용시간을 추가합니다.
 	void RechargeTime(const Member& target, const float& seconds);
 	// it initiates every initialization and activate terminal  
 	void Initialize();
 	bool QueryNextAction(); // 사용자에게 명령어를 요구하고, 입력된 명령어에 대응하는 메서드를 실행합니다.
 	void LoadPCinfos(); // PC방에 있는 PC들의 정보를 파일에서 읽어 옵니다.
+	
 	// Card* SearchCard(const int& CardName); // 카드 번호와 맞는 카드를 반환하는 함수. - 설계에 추가 요망
 	// 객체를 바로 집어넣는 것으로.
 };

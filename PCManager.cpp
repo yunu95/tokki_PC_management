@@ -26,12 +26,12 @@ PCManager::PCManager()
 
 	// 카드 객체를 미리 생성해 cards 벡터 안에 집어넣습니다. 카드의 번호는 1부터 순서대로 생성됩니다.	
 	
-	for(int i=1;i < 101 ;i++)
+	for(int i = 0;i < 100 ;i++)
 	cards.push_back(new Card(i,0));
 
 	// PC 객체는 이미 생성된 상태겠지요. 100개가 있다고 가정하고 벡터 안에 집어넣습니다.
-	for (int i = 1; i < 101; i++)
-	pcs.push_back(new PC()); 
+	for (int i = 0; i < 100; i++)
+	pcs.push_back(new PC(i)); 
 	
 	// Q. PC에도 번호가 있어야 하지 않는지?
 	
@@ -61,9 +61,10 @@ bool PCManager::QueryNextAction() {
 
 		// 커맨드에 따라 필요한 함수를 호출한다.
 		if (command == "rechargecard")
-			cout << "추가할 시간과 일련번호를 입력하세요. "<< endl;
-			cin >> PlusTime >> CardNumber;
-			//RechargeTime(SearchCard(CardNumber), PlusTime);
+			cout << "카드의 일련번호와 추가할 시간을 입력하세요. "<< endl;
+			cin >> CardNumber >> PlusTime;
+			std::cout << "현재" << cards[CardNumber]->GetCardNo() << "번 카드는" << cards[CardNumber]->GetleftT() << "초인 상태입니다." << std::endl;
+			RechargeTime(*cards[CardNumber], PlusTime);
 			return true;
 		if (command == "rechargemember")
 			//RechargeTime(const Member& target, const float& seconds)
@@ -84,19 +85,20 @@ void PCManager::Initialize() {
 	while (QueryNextAction());
 }
 
-void PCManager::RechargeTime(const Card& target, const float& seconds)
+void PCManager::RechargeTime(Card& target, const float& seconds)
 	{
 
 		// 손놈 : 카드 번호랑 시간 줄테니까 더해와
+		target.SetLeftTime(seconds);
 		// 직원 : 네 카드번호가 target번이니까 잠시만요 , cards벡터에서 target번째를 꺼내고
+		std::cout << target.GetCardNo() << "번 카드에" << target.GetleftT() << "초가 추가 되었습니다." << std::endl;
 		// 거기에 있는 left_time에 seconds를 더해서 갱신할게요.
-
 	}
 
 void PCManager::RechargeTime(const Member& target, const float& seconds)
 	{
 		// 멤버 아이디를 요구하고, 아이디 정보를 DB에서 불러옵니다.
-		
+	
 
 		// 정보에 있는 left_time에 seconds를 더해서 갱신합니다.
 	}
@@ -116,6 +118,7 @@ void PCManager::LoadPCinfos()
 	inputFile.close();
 }
 
+/*
 Card* PCManager::SearchCard(const int& CardName)
 {
 	
@@ -123,9 +126,9 @@ Card* PCManager::SearchCard(const int& CardName)
 
 	// iterator를 사용합니다.
 
-	//retrun card_object;
 
 	//임시방편.
 	return nullptr;
 }
 
+*/

@@ -16,5 +16,7 @@ public: //
 
 	void AbortUsing(const PC& target);
 	void SetLeftTime(const float& time);
+	int GetCardNo();
+	float GetleftT();
 };
 
