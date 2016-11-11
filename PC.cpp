@@ -28,8 +28,13 @@ bool PC::StopUsing() {
 	is_active = false;
 	return true;
 }
-//사용자가 컴퓨터를 사용을 중지으로서 사용상태의 멤버 변수인 
+//사용자가 컴퓨터를 사용을 중지함으로서 사용상태의 멤버 변수인 
 //is_active 가 false가 된다.
+
+bool PC::AbortUsing()
+{
+	return true; // 수정 필요
+}
 
 bool PC::TurnOnComputer() {
 	is_power_on = true;

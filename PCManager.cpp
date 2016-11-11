@@ -63,8 +63,18 @@ bool PCManager::QueryNextAction() {
 		if (command == "rechargecard")
 			cout << "카드의 일련번호와 추가할 시간을 입력하세요. "<< endl;
 			cin >> CardNumber >> PlusTime;
-			std::cout << "현재" << cards[CardNumber]->GetCardNo() << "번 카드는" << cards[CardNumber]->GetleftT() << "초인 상태입니다." << std::endl;
+			
+			cout << "현재" << cards[CardNumber]->GetCardNo() << "번 카드는" << cards[CardNumber]->GetleftT() << "초인 상태입니다." << endl;
 			RechargeTime(*cards[CardNumber], PlusTime);
+			
+			CardNumber = NULL;
+			PlusTime = 0;
+
+			if (cin.fail()) {
+				cin.clear();
+				cin.ignore(INT_MAX, '\n');
+			}
+
 			return true;
 		if (command == "rechargemember")
 			//RechargeTime(const Member& target, const float& seconds)
