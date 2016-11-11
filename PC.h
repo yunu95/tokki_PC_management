@@ -27,5 +27,8 @@ public:
 	bool TurnOnComputer();
 	// 전원을 끕니다.
 	bool TurnOffComputer();
+	
+	bool GetPower_Status();
+	bool Getactive_Status();
 };
 

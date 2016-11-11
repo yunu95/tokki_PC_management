@@ -17,14 +17,20 @@ void Card::AbortUsing(const PC& target) {
 }
 
 void Card::SetLeftTime(const float& time) {
-	left_time = left_time + time;
+	this-> left_time = time;
 }
+// Q. this->left_time = time; 둘 중 어느 것이 원하는 것인가?
 
 int Card::GetCardNo()
 {
 	return this->card_number;
 }
-float Card::GetleftT()
+float Card::GetLeftTime() const
 {
+	//for the clarification, 'this' keyword has been used
 	return this->left_time;
+}
+
+void Card::PlusLeftTime(const float& time) {
+	this-> left_time = left_time + time;
 }

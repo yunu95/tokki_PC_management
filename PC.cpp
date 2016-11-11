@@ -50,3 +50,12 @@ bool PC::TurnOffComputer() {
 //사용자가 컴퓨터의 전원을 끔으로서 전원여부의 멤버 변수인 
 //is_power_on 가 false가 된다.
 //code by Vincent
+
+bool PC::GetPower_Status()
+{
+	return this-> is_power_on;
+}
+bool PC::Getactive_Status()
+{
+	return this-> is_active;
+}

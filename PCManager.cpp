@@ -3,19 +3,28 @@
 #include <fstream>
 #include <vector>
 #include "PCManager.h"
+#include "PCManager.h"
 #include "Card.h"
 #include "Member.h" 
-#include "PC.h" 
+#include "PC.h"
 
+// these somesome codes below contain everything needed for singletone desgin pattern
+// this class pointer is the only instance of this class
 PCManager* PCManager::instance = nullptr;; 
+
+// this method is used to get instance of this class
 PCManager* PCManager::GetInstance() {
+	//what this condition says is, just like this. instance != nullpointer
 	if (instance)
 		return instance;
 	else
+		// 1. constructor gets called just once
+		// 2. constructor exists in private field
 		return instance = new PCManager(); 
 }
 // 싱글톤 패턴을 구현하는 부분입니다. 
 
+// initiates all the commands needed in terminal.
 PCManager::PCManager()
 {
 	commandsList.push_back(std::string("RechargeCard"));
@@ -33,8 +42,6 @@ PCManager::PCManager()
 	for (int i = 0; i < 100; i++)
 	pcs.push_back(new PC(i)); 
 	
-	// Q. PC에도 번호가 있어야 하지 않는지?
-	
 	// 손님이 멤버인 경우는 데이터 베이스에서 불러오게 됩니다.
 
 	
@@ -50,7 +57,8 @@ bool PCManager::QueryNextAction() {
 	for (string each : commandsList) {
 		cout << each;
 		cout << ",";
-	}
+	} // commandsList 출력
+
 	cout << "\n";
 	string command;
 	getline(cin, command);
@@ -60,33 +68,76 @@ bool PCManager::QueryNextAction() {
 			*EachChar = tolower(*EachChar);
 
 		// 커맨드에 따라 필요한 함수를 호출한다.
-		if (command == "rechargecard")
-			cout << "카드의 일련번호와 추가할 시간을 입력하세요. "<< endl;
-			cin >> CardNumber >> PlusTime;
-			
-			cout << "현재" << cards[CardNumber]->GetCardNo() << "번 카드는" << cards[CardNumber]->GetleftT() << "초인 상태입니다." << endl;
-			RechargeTime(*cards[CardNumber], PlusTime);
-			
-			CardNumber = NULL;
-			PlusTime = 0;
+		if (command == "rechargecard") {
 
-			if (cin.fail()) {
-				cin.clear();
-				cin.ignore(INT_MAX, '\n');
-			}
+			cout << "카드의 일련번호와 추가할 시간을 입력하세요. " << endl;
+			cin >> CardNumber >> PlusTime;
+
+			cout << "현재" << cards[CardNumber]->GetCardNo() << "번 카드는"
+				<< cards[CardNumber]->GetLeftTime() << "초인 상태입니다." << endl;
+			RechargeTime(*cards[CardNumber], PlusTime);
+
+			CardNumber = NULL;
+			PlusTime = 0.0;
+
+			cin.clear();
+			cin.ignore(INT_MAX, '\n');
 
 			return true;
-		if (command == "rechargemember")
+		}
+		if (command == "rechargemember") {
 			//RechargeTime(const Member& target, const float& seconds)
 			return true;
-		if (command == "checkout")
-			// 카드를 다시 벡터에 집어넣는다.
+		}
+		if (command == "checkout") {
+			// checkout - Do initialize information this card.
+			cout << "카드의 일련번호를 입력하세요. " << endl;
+			cin >> CardNumber;
+			CheckoutCard(*cards[CardNumber]);
+			cout << cards[CardNumber]->GetCardNo() << "번 카드가 "
+				<< cards[CardNumber]->GetLeftTime() << "초로 초기화 되었습니다." << endl;
+			
+			CardNumber = NULL;
+
+			cin.clear();
+			cin.ignore(INT_MAX, '\n');
+
 			return true;
-		if (command == "status")
-			// 카드의 정보를 초기화한다. 남은 시간을 0으로 바꾼다.
+		}
+		if (command == "status") {
+				//PC 상태확인은 현재 PC방의 pc들 중 몇 대가 켜져 있고 몇대가 꺼져 있는지, -  is_power_on
+				//또 몇 대가 사용중인지 pc방의 상태를 보여준다. - is_active
+				// 이터레이터로 벡터에서 싹 다 훑은 뒤 변수에 저장합니다.
+			
+			LoadPCinfos(); // PC의 개수를 보여 줍니다. 
+
+			int On_count = 0;
+			int OFF_count = 0;
+			int active_count = 0;
+
+			for (auto status = pcs.begin(), end = pcs.end(); status != end; ++status) {
+				if ((**status).GetPower_Status() == true) 
+					On_count++;
+				
+				else 
+					OFF_count++;
+
+				if ((**status).Getactive_Status() == true)
+					active_count++;
+			}
+			
+			cout << "현재 켜져 있는 PC의 대수는 " << On_count << " 대 입니다." <<endl;
+			cout << "현재 꺼져 있는 PC의 대수는 " << OFF_count << " 대 입니다." << endl;
+			cout << "현재 사용되고 있는 PC의 대수는 " << active_count << " 대 입니다." << endl;
+
+			cin.clear();
+			cin.ignore(INT_MAX, '\n');
+
 			return true;
-		if (command == "quit")
+		}
+		if (command == "quit") {
 			return false;
+		}
 	}
 	cout << "UnIdentified Command\n";
 	return true;
@@ -99,9 +150,10 @@ void PCManager::RechargeTime(Card& target, const float& seconds)
 	{
 
 		// 손놈 : 카드 번호랑 시간 줄테니까 더해와
-		target.SetLeftTime(seconds);
+		target.PlusLeftTime(seconds);
 		// 직원 : 네 카드번호가 target번이니까 잠시만요 , cards벡터에서 target번째를 꺼내고
-		std::cout << target.GetCardNo() << "번 카드에" << target.GetleftT() << "초가 추가 되었습니다." << std::endl;
+		std::cout << target.GetCardNo() << "번 카드에" 
+			<< seconds << "초가 추가 되었습니다." << std::endl;
 		// 거기에 있는 left_time에 seconds를 더해서 갱신할게요.
 	}
 
@@ -109,6 +161,8 @@ void PCManager::RechargeTime(const Member& target, const float& seconds)
 	{
 		// 멤버 아이디를 요구하고, 아이디 정보를 DB에서 불러옵니다.
 	
+		// below here should be placed socket programming things
+		// which means, Back to work! sung yeon!
 
 		// 정보에 있는 left_time에 seconds를 더해서 갱신합니다.
 	}
@@ -128,17 +182,7 @@ void PCManager::LoadPCinfos()
 	inputFile.close();
 }
 
-/*
-Card* PCManager::SearchCard(const int& CardName)
+void PCManager::CheckoutCard(Card& card)
 {
-	
-	// Cards 벡터에서 각 Card.card_number의 값을 탐색하고 맞다면 그 카드 객체를 반환. 
-
-	// iterator를 사용합니다.
-
-
-	//임시방편.
-	return nullptr;
+	card.SetLeftTime(0);
 }
-
-*/
