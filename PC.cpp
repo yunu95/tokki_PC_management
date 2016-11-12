@@ -2,8 +2,13 @@
 
 
 
-PC::PC()
+PC::PC(const int& number)
 {
+	int PC_Number = number;
+	bool is_active = false;
+	bool is_power_on = false; 
+	current_user = nullptr;
+	// ±âº»ÀûÀ¸·Î »ç¿ëÀÚ°¡ ¾ø°í ²¨Á® ÀÖ´Â »óÅÂ·Î ÃÊ±âÈ­ µË´Ï´Ù.
 }
 
 
@@ -16,29 +21,41 @@ bool PC::StartUsing() {
 	is_active = true;
 	return true;
 }
-//startusing ë©”ì†Œë“œ ë‚´ë¶€ì—ì„œ 
-//DBë§¤ë‹ˆì €ì˜ ë ˆì§€ìŠ¤í„°ë‚˜ ë¡œê·¸ì¸ ë©”ì†Œë“œ í˜¸ì¶œë¨
-//ì‚¬ìš©ìžê°€ ì»´í“¨í„°ë¥¼ ì‚¬ìš©í•¨ìœ¼ë¡œì„œ ì‚¬ìš©ìƒíƒœì˜ ë©¤ë²„ ë³€ìˆ˜ì¸
-//is_active ê°€ trueê°€ ëœë‹¤.
+//»ç¿ëÀÚ°¡ ÄÄÇ»ÅÍ¸¦ »ç¿ëÇÔÀ¸·Î¼­ »ç¿ë»óÅÂÀÇ ¸â¹ö º¯¼öÀÎ
+//is_active °¡ true°¡ µÈ´Ù.
 
 bool PC::StopUsing() {
 	is_active = false;
 	return true;
 }
-//ì‚¬ìš©ìžê°€ ì»´í“¨í„°ë¥¼ ì‚¬ìš©ì„ ì¤‘ì§€ìœ¼ë¡œì„œ ì‚¬ìš©ìƒíƒœì˜ ë©¤ë²„ ë³€ìˆ˜ì¸ 
-//is_active ê°€ falseê°€ ëœë‹¤.
+//»ç¿ëÀÚ°¡ ÄÄÇ»ÅÍ¸¦ »ç¿ëÀ» ÁßÁöÇÔÀ¸·Î¼­ »ç¿ë»óÅÂÀÇ ¸â¹ö º¯¼öÀÎ 
+//is_active °¡ false°¡ µÈ´Ù.
+
+bool PC::AbortUsing()
+{
+	return true; // ¼öÁ¤ ÇÊ¿ä
+}
 
 bool PC::TurnOnComputer() {
 	is_power_on = true;
 	return true;
 }
-//ì‚¬ìš©ìžê°€ ì»´í“¨í„°ì˜ ì „ì›ì„ ì¼¬ìœ¼ë¡œì„œ ì „ì›ì—¬ë¶€ì˜ ë©¤ë²„ ë³€ìˆ˜ì¸ 
-//is_power_on ê°€ trueê°€ ëœë‹¤.
+//»ç¿ëÀÚ°¡ ÄÄÇ»ÅÍÀÇ Àü¿øÀ» ÄÔÀ¸·Î¼­ Àü¿ø¿©ºÎÀÇ ¸â¹ö º¯¼öÀÎ 
+//is_power_on °¡ true°¡ µÈ´Ù.
 
 bool PC::TurnOffComputer() {
 	is_power_on = false;
 	return true;
 }
-//ì‚¬ìš©ìžê°€ ì»´í“¨í„°ì˜ ì „ì›ì„ ë”ìœ¼ë¡œì„œ ì „ì›ì—¬ë¶€ì˜ ë©¤ë²„ ë³€ìˆ˜ì¸ 
-//is_power_on ê°€ falseê°€ ëœë‹¤.
+//»ç¿ëÀÚ°¡ ÄÄÇ»ÅÍÀÇ Àü¿øÀ» ²ûÀ¸·Î¼­ Àü¿ø¿©ºÎÀÇ ¸â¹ö º¯¼öÀÎ 
+//is_power_on °¡ false°¡ µÈ´Ù.
 //code by Vincent
+
+bool PC::GetPower_Status()
+{
+	return this-> is_power_on;
+}
+bool PC::Getactive_Status()
+{
+	return this-> is_active;
+}

@@ -1,14 +1,16 @@
 #include <iostream>
 #include <string>
+#include <fstream>
 #include <vector>
 #include "PCManager.h"
-#include "DBManager.h"
+#include "PCManager.h"
 #include "Card.h"
-#include "Member.h"
+#include "Member.h" 
+#include "PC.h"
 
 // these somesome codes below contain everything needed for singletone desgin pattern
 // this class pointer is the only instance of this class
-PCManager* PCManager::instance = nullptr;;
+PCManager* PCManager::instance = nullptr;; 
 
 // this method is used to get instance of this class
 PCManager* PCManager::GetInstance() {
@@ -18,20 +20,33 @@ PCManager* PCManager::GetInstance() {
 	else
 		// 1. constructor gets called just once
 		// 2. constructor exists in private field
-		return instance = new PCManager();
+		return instance = new PCManager(); 
 }
+// ½Ì±ÛÅæ ÆÐÅÏÀ» ±¸ÇöÇÏ´Â ºÎºÐÀÔ´Ï´Ù. 
 
 // initiates all the commands needed in terminal.
 PCManager::PCManager()
 {
-	cards.push_back(new Card(0));
 	commandsList.push_back(std::string("RechargeCard"));
 	commandsList.push_back(std::string("RechargeMember"));
 	commandsList.push_back(std::string("Checkout"));
 	commandsList.push_back(std::string("Status"));
-	commandsList.push_back(std::string("Quit"));
-}
+	commandsList.push_back(std::string("Quit")); 
 
+	// Ä«µå °´Ã¼¸¦ ¹Ì¸® »ý¼ºÇØ cards º¤ÅÍ ¾È¿¡ Áý¾î³Ö½À´Ï´Ù. Ä«µåÀÇ ¹øÈ£´Â 1ºÎÅÍ ¼ø¼­´ë·Î »ý¼ºµË´Ï´Ù.	
+	
+	for(int i = 0;i < 100 ;i++)
+	cards.push_back(new Card(i,0));
+
+	// PC °´Ã¼´Â ÀÌ¹Ì »ý¼ºµÈ »óÅÂ°ÚÁö¿ä. 100°³°¡ ÀÖ´Ù°í °¡Á¤ÇÏ°í º¤ÅÍ ¾È¿¡ Áý¾î³Ö½À´Ï´Ù.
+	for (int i = 0; i < 100; i++)
+	pcs.push_back(new PC(i)); 
+	
+	// ¼Õ´ÔÀÌ ¸â¹öÀÎ °æ¿ì´Â µ¥ÀÌÅÍ º£ÀÌ½º¿¡¼­ ºÒ·¯¿À°Ô µË´Ï´Ù.
+
+	
+}
+// ¿©±â´Â ÇÁ·Î±×·¥ÀÌ ½ÇÇàµÇ´Â °ø°£ÀÌ ¾Æ´Ô. ´ÜÁö ÇÊµåÀÏ »Ó
 
 PCManager::~PCManager()
 {
@@ -42,56 +57,132 @@ bool PCManager::QueryNextAction() {
 	for (string each : commandsList) {
 		cout << each;
 		cout << ",";
-	}
+	} // commandsList Ãâ·Â
+
 	cout << "\n";
 	string command;
 	getline(cin, command);
-	for (string each : commandsList) 
-	{
-		// ?…ë ¥??ëª…ë ¹?´ë? ëª¨ë‘ ?Œë¬¸?ë¡œ ë°”ê¿”ì¤€??
-		for (string::iterator EachChar = command.begin(); EachChar < command.end(); EachChar++)
+	for (string each : commandsList) {
+		// ÀÔ·ÂµÈ ¸í·É¾î¸¦ ¸ðµÎ ¼Ò¹®ÀÚ·Î ¹Ù²ãÁØ´Ù.
+		for (string::iterator EachChar = command.begin(); EachChar < command.end();EachChar++)
 			*EachChar = tolower(*EachChar);
 
-		// ì»¤ë§¨?œì— ?°ë¼ ?„ìš”???¨ìˆ˜ë¥??¸ì¶œ?œë‹¤.
-		if (command == "rechargecard")
-		{
-			int card_num;
-			float time;
-			cin >> card_num;
-			cin >> time;
-			RechargeTime(*cards[card_num],time);
+		// Ä¿¸Çµå¿¡ µû¶ó ÇÊ¿äÇÑ ÇÔ¼ö¸¦ È£ÃâÇÑ´Ù.
+		if (command == "rechargecard") {
+
+			cout << "Ä«µåÀÇ ÀÏ·Ã¹øÈ£¿Í Ãß°¡ÇÒ ½Ã°£À» ÀÔ·ÂÇÏ¼¼¿ä. " << endl;
+			cin >> CardNumber >> PlusTime;
+
+			cout << "ÇöÀç" << cards[CardNumber]->GetCardNo() << "¹ø Ä«µå´Â"
+				<< cards[CardNumber]->GetLeftTime() << "ÃÊÀÎ »óÅÂÀÔ´Ï´Ù." << endl;
+			RechargeTime(*cards[CardNumber], PlusTime);
+
+			CardNumber = NULL;
+			PlusTime = 0.0;
+
+			cin.clear();
+			cin.ignore(INT_MAX, '\n');
+
 			return true;
 		}
-		if (command == "rechargemember") 
-		{
-			string id;
-			float time;
-			cin >> id;
-			cin >> time;
-			RechargeTime(*DBManager::GetInstance()->GetMemberinfo(id), time);
+		if (command == "rechargemember") {
+			//RechargeTime(const Member& target, const float& seconds)
 			return true;
 		}
-		if (command == "checkout")
+		if (command == "checkout") {
+			// checkout - Do initialize information this card.
+			cout << "Ä«µåÀÇ ÀÏ·Ã¹øÈ£¸¦ ÀÔ·ÂÇÏ¼¼¿ä. " << endl;
+			cin >> CardNumber;
+			CheckoutCard(*cards[CardNumber]);
+			cout << cards[CardNumber]->GetCardNo() << "¹ø Ä«µå°¡ "
+				<< cards[CardNumber]->GetLeftTime() << "ÃÊ·Î ÃÊ±âÈ­ µÇ¾ú½À´Ï´Ù." << endl;
+			
+			CardNumber = NULL;
+
+			cin.clear();
+			cin.ignore(INT_MAX, '\n');
+
 			return true;
-		if (command == "status")
+		}
+		if (command == "status") {
+				//PC »óÅÂÈ®ÀÎÀº ÇöÀç PC¹æÀÇ pcµé Áß ¸î ´ë°¡ ÄÑÁ® ÀÖ°í ¸î´ë°¡ ²¨Á® ÀÖ´ÂÁö, -  is_power_on
+				//¶Ç ¸î ´ë°¡ »ç¿ëÁßÀÎÁö pc¹æÀÇ »óÅÂ¸¦ º¸¿©ÁØ´Ù. - is_active
+				// ÀÌÅÍ·¹ÀÌÅÍ·Î º¤ÅÍ¿¡¼­ ½Ï ´Ù ÈÈÀº µÚ º¯¼ö¿¡ ÀúÀåÇÕ´Ï´Ù.
+			
+			LoadPCinfos(); // PCÀÇ °³¼ö¸¦ º¸¿© ÁÝ´Ï´Ù. 
+
+			int On_count = 0;
+			int OFF_count = 0;
+			int active_count = 0;
+
+			for (auto status = pcs.begin(), end = pcs.end(); status != end; ++status) {
+				if ((**status).GetPower_Status() == true) 
+					On_count++;
+				
+				else 
+					OFF_count++;
+
+				if ((**status).Getactive_Status() == true)
+					active_count++;
+			}
+			
+			cout << "ÇöÀç ÄÑÁ® ÀÖ´Â PCÀÇ ´ë¼ö´Â " << On_count << " ´ë ÀÔ´Ï´Ù." <<endl;
+			cout << "ÇöÀç ²¨Á® ÀÖ´Â PCÀÇ ´ë¼ö´Â " << OFF_count << " ´ë ÀÔ´Ï´Ù." << endl;
+			cout << "ÇöÀç »ç¿ëµÇ°í ÀÖ´Â PCÀÇ ´ë¼ö´Â " << active_count << " ´ë ÀÔ´Ï´Ù." << endl;
+
+			cin.clear();
+			cin.ignore(INT_MAX, '\n');
+
 			return true;
-		if (command == "quit")
+		}
+		if (command == "quit") {
 			return false;
+		}
 	}
 	cout << "UnIdentified Command\n";
 	return true;
 }
-void PCManager::Initialize() 
-{
+void PCManager::Initialize() {
 	while (QueryNextAction());
 }
 
-void::PCManager::RechargeTime(Card& target, const float& seconds) 
+void PCManager::RechargeTime(Card& target, const float& seconds)
+	{
+
+		// ¼Õ³ð : Ä«µå ¹øÈ£¶û ½Ã°£ ÁÙÅ×´Ï±î ´õÇØ¿Í
+		target.PlusLeftTime(seconds);
+		// Á÷¿ø : ³× Ä«µå¹øÈ£°¡ target¹øÀÌ´Ï±î Àá½Ã¸¸¿ä , cardsº¤ÅÍ¿¡¼­ target¹øÂ°¸¦ ²¨³»°í
+		std::cout << target.GetCardNo() << "¹ø Ä«µå¿¡" 
+			<< seconds << "ÃÊ°¡ Ãß°¡ µÇ¾ú½À´Ï´Ù." << std::endl;
+		// °Å±â¿¡ ÀÖ´Â left_time¿¡ seconds¸¦ ´õÇØ¼­ °»½ÅÇÒ°Ô¿ä.
+	}
+
+void PCManager::RechargeTime(const Member& target, const float& seconds)
+	{
+		// ¸â¹ö ¾ÆÀÌµð¸¦ ¿ä±¸ÇÏ°í, ¾ÆÀÌµð Á¤º¸¸¦ DB¿¡¼­ ºÒ·¯¿É´Ï´Ù.
+	
+		// below here should be placed socket programming things
+		// which means, Back to work! sung yeon!
+
+		// Á¤º¸¿¡ ÀÖ´Â left_time¿¡ seconds¸¦ ´õÇØ¼­ °»½ÅÇÕ´Ï´Ù.
+	}
+
+void PCManager::LoadPCinfos()
 {
-	target.SetLeftTime(target.GetLeftTime() + seconds);
+	using namespace std;
+	string inputString;
+	
+	ifstream inputFile("PCinfos.txt"); // PCinfos ¿¡´Â PC¹æ¿¡ ÀÖ´Â PCµéÀÇ Á¤º¸°¡ ´ã°ÜÀÖ½¿´Ù. 
+
+	while (!inputFile.eof())
+	{
+		inputFile >> inputString;
+		cout << "PCµéÀÇ °³¼ö : " << inputString << endl;
+	}
+	inputFile.close();
 }
-void::PCManager::RechargeTime(Member& target, const float& seconds) 
+
+void PCManager::CheckoutCard(Card& card)
 {
-	// below here should be placed socket programming things
-	// which means, Back to work! sung yeon!
+	card.SetLeftTime(0);
 }

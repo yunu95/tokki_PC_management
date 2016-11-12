@@ -1,13 +1,13 @@
 #include "User.h"
 #include <iostream>
-#include <ctime> // ì‹œê°„ ê´€ë ¨.
+#include <ctime> // ½Ã°£ °ü·Ã.
 
 User::User()
 {
 	
 }
 
+
 User::~User()
 {
-
 }
