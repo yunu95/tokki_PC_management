@@ -2,38 +2,34 @@
 #include <cstring>
 #pragma once
 /*
-¿ø°Ý DataBaseÀÇ Á¤º¸¸¦ Ã£¾Æ ¹ÝÈ¯ÇÏ°Å³ª Á¤º¸¸¦ ¾÷µ¥ÀÌÆ®½ÃÄÑÁØ´Ù.
+ì›ê²© DataBaseì˜ ì •ë³´ë¥¼ ì°¾ì•„ ë°˜í™˜í•˜ê±°ë‚˜ ì •ë³´ë¥¼ ì—…ë°ì´íŠ¸ì‹œì¼œì¤€ë‹¤.
 */
+class Member;
 class DBManager
 {
 private:
-	// ¿ÀÁ÷ ÀÎ½ºÅÏ½º°¡ ÇÏ³ª¸¸ ÀÖ¾î¾ß ÇÏ´Â Å¬·¡½ºÀÌ¹Ç·Î,
-	// ¿ÜºÎ¿¡¼­ ÇÔºÎ·Î »ý¼ºÀÚ°¡ È£ÃâµÇ¸é ¾ÈµÇ±â¿¡ »ý¼ºÀÚ¿Í ¼Ò¸êÀÚ¿¡ private ÇÑÁ¤ÀÚ°¡ ºÙ½À´Ï´Ù.
+	// ì˜¤ì§ ì¸ìŠ¤í„´ìŠ¤ê°€ í•˜ë‚˜ë§Œ ìžˆì–´ì•¼ í•˜ëŠ” í´ëž˜ìŠ¤ì´ë¯€ë¡œ,
+	// ì™¸ë¶€ì—ì„œ í•¨ë¶€ë¡œ ìƒì„±ìžê°€ í˜¸ì¶œë˜ë©´ ì•ˆë˜ê¸°ì— ìƒì„±ìžì™€ ì†Œë©¸ìžì— private í•œì •ìžê°€ ë¶™ìŠµë‹ˆë‹¤.
 	DBManager();
 	~DBManager();
-	// ¾Æ·¡ÀÇ Æ÷ÀÎÅÍ´Â ÀÌ Å¬·¡½ºÀÇ À¯ÀÏÇÑ °´Ã¼¸¦ °¡¸®Åµ´Ï´Ù.
+	// ì•„ëž˜ì˜ í¬ì¸í„°ëŠ” ì´ í´ëž˜ìŠ¤ì˜ ìœ ì¼í•œ ê°ì²´ë¥¼ ê°€ë¦¬í‚µë‹ˆë‹¤.
 	static DBManager* instance;
 public:
-	class Member;
-	
-	/*
-	// µ¥ÀÌÅÍº£ÀÌ½º¿¡ ÇØ´ç id,password¸¦ ¸¸Á·ÇÏ´Â »ç¿ëÀÚ°¡ ÀÖ´ÂÁö È®ÀÎÇÑ´Ù.
-	bool Login(std::string id,std::string password);
-	// µ¥ÀÌÅÍº£ÀÌ½º¿¡ info¿Í °°Àº Á¤º¸¸¦ °¡Áö´Â Æ©ÇÃÀÌ ¾ø´Ù¸é ÂüÀ» ¹ÝÈ¯ÇÑ´Ù.
+	// ë°ì´í„°ë² ì´ìŠ¤ì— í•´ë‹¹ id,passwordë¥¼ ë§Œì¡±í•˜ëŠ” ì‚¬ìš©ìžê°€ ìžˆëŠ”ì§€ í™•ì¸í•œë‹¤.
+	bool Login(std::string id, std::string password);
+	// ë°ì´í„°ë² ì´ìŠ¤ì— infoì™€ ê°™ì€ ì •ë³´ë¥¼ ê°€ì§€ëŠ” íŠœí”Œì´ ì—†ë‹¤ë©´ ì°¸ì„ ë°˜í™˜í•œë‹¤.
 	bool Register(Member& info);
-	// DBÀÇ È¸¿øÀÇ Á¤º¸¸¦ ID¸¦ ÅëÇØ °¡Á®¿Í MemberÀÚ·áÇüÀ¸·Î ¹ÝÈ¯ÇÑ´Ù.
-	Member GetMemberinfo(std::string ID);
-	// DBÀÇ È¸¿øÀÇ Á¤º¸¸¦ Å°°ªÀ» ÅëÇØ °¡Á®¿Í MemberÀÚ·áÇüÀ¸·Î ¹ÝÈ¯ÇÑ´Ù.
-	Member GetMemberinfo(int key);
-	// DB¿¡ ÀÖ´Â È¸¿øÀÇ Á¤º¸¸¦ ¾÷µ¥ÀÌÆ®ÇÑ´Ù. ½ÇÆÐÇÏ¸é false¸¦ ¹ÝÈ¯ÇÑ´Ù.
-	*/
-	
+	// DBì˜ íšŒì›ì˜ ì •ë³´ë¥¼ IDë¥¼ í†µí•´ ê°€ì ¸ì™€ Memberìžë£Œí˜•ìœ¼ë¡œ ë°˜í™˜í•œë‹¤.
+	Member* GetMemberinfo(std::string ID);
+	// DBì˜ íšŒì›ì˜ ì •ë³´ë¥¼ í‚¤ê°’ì„ í†µí•´ ê°€ì ¸ì™€ Memberìžë£Œí˜•ìœ¼ë¡œ ë°˜í™˜í•œë‹¤.
+	Member* GetMemberinfo(int key);
+	// DBì— ìžˆëŠ” íšŒì›ì˜ ì •ë³´ë¥¼ ì—…ë°ì´íŠ¸í•œë‹¤. ì‹¤íŒ¨í•˜ë©´ falseë¥¼ ë°˜í™˜í•œë‹¤.
 	bool UpdateMemberinfo(const Member& info);
-	// ½Ì±ÛÅæ °´Ã¼ÀÇ À¯ÀÏÇÑ ÀÎ½ºÅÏ½º¸¦ ÂüÁ¶ÇÏ±â À§ÇØ ¾²ÀÌ´Â Getter¸Þ¼­µå.
+	// ì‹±ê¸€í†¤ ê°ì²´ì˜ ìœ ì¼í•œ ì¸ìŠ¤í„´ìŠ¤ë¥¼ ì°¸ì¡°í•˜ê¸° ìœ„í•´ ì“°ì´ëŠ” Getterë©”ì„œë“œ.
 	static DBManager* GetInstance();
 };
 
 /*
-Login,Register¿Í °°Àº ½Ì±ÛÅæ °´Ã¼ÀÇ ¸Þ¼­µå¸¦ »ç¿ëÇÏ°í ½Í´Ù¸é
-GetInstance()->Login(... ÀÌ·±½ÄÀ¸·Î »ç¿ëÇÒ ¼ö ÀÖ½À´Ï´Ù.
+Login,Registerì™€ ê°™ì€ ì‹±ê¸€í†¤ ê°ì²´ì˜ ë©”ì„œë“œë¥¼ ì‚¬ìš©í•˜ê³  ì‹¶ë‹¤ë©´
+GetInstance()->Login(... ì´ëŸ°ì‹ìœ¼ë¡œ ì‚¬ìš©í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤.
 */

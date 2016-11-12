@@ -1,42 +1,32 @@
 #pragma once
 #include <vector>
-#include <thread> // ½º·¹µå´Â ÇÑ°³¸¸ ¸¸µé¸é µÊ.
-
 /*
-¸ğµç PC °´Ã¼µéÀÇ ÀÎ½ºÅÏ½ºµéÀ» Æ÷ÇÔÇÏ°í ÀÖ´Ù. PC¹æÀÇ Ä«¿îÅÍ PC¿¡ ÇØ´çµÇ´Â °´Ã¼ÀÌ´Ù. - ½Ì±ÛÅæ ÆĞÅÏ Àû¿ë.
+ëª¨ë“  PC ê°ì²´?¤ì˜ ?¸ìŠ¤?´ìŠ¤?¤ì„ ?¬í•¨?˜ê³  ?ˆë‹¤. PCë°©ì˜ ì¹´ìš´??PC???´ë‹¹?˜ëŠ” ê°ì²´?´ë‹¤.
 */
 
-// ¾Æ·¡ÀÇ Å¬·¡½º ¼±¾ğÀº Å¬·¡½º Àü¹æ¼±¾ğÀÔ´Ï´Ù.
+// ?„ë˜???´ë˜??? ì–¸?€ ?´ë˜???„ë°©? ì–¸?…ë‹ˆ??
 class Card;
 class Member;
-class PC;
 
 class PCManager
 {
 private:
 	PCManager();
-	~PCManager(); 
-	// ½Ì±ÛÅæ ÆĞÅÏÀÌ±â ¶§¹®¿¡, Å¬·¡½º ¿ÜºÎ¿¡¼­ ÇÔºÎ·Î °´Ã¼¸¦ ¸¸µé¸é ¾È µË´Ï´Ù. µû¶ó¼­ »ı¼ºÀÚ´Â private·Î ¼±¾ğµË´Ï´Ù. 
-	static PCManager* instance; // ÀÌ Å¬·¡½ºÀÇ À¯ÀÏÇÑ °´Ã¼¸¦ °¡¸®Å°´Â Æ÷ÀÎÅÍÀÔ´Ï´Ù.
+	~PCManager();
+	static PCManager* instance;
 	std::vector<std::string> commandsList;
-	// ¸ğµç pcµéÀÇ ÀÎ½ºÅÏ½ºµéÀº pcs¿¡ µé¾îÀÖ½À´Ï´Ù.
+	// ëª¨ë“  pc?¤ì˜ ?¸ìŠ¤?´ìŠ¤?¤ì? pcs???¤ì–´?ˆìŠµ?ˆë‹¤.
 	std::vector<class PC*> pcs;
-	// ¸ğµç CardµéÀÇ ÀÎ½ºÅÏ½ºµéÀº cards¿¡ µé¾îÀÖ½À´Ï´Ù.
+	// ëª¨ë“  Card?¤ì˜ ?¸ìŠ¤?´ìŠ¤?¤ì? cards???¤ì–´?ˆìŠµ?ˆë‹¤.
 	std::vector<class Card*> cards;
-	
-	float PlusTime;
-	int CardNumber;
 public:
-	std::thread Updater; // ¸Å ÃÊ¸¶´Ù LoadPCinfos()¸¦ È£ÃâÇÏ°í, °¢ PCµéÀÇ »óÅÂ¸¦ ¾÷µ¥ÀÌÆ®ÇÏ´Â thread
-	static PCManager *GetInstance(); // Á¤Àû ¸Ş¼­µå·Î¼­, Å¬·¡½ºÀÇ °´Ã¼¸¦ ¸¸µé ¶§ »ç¿ëÇÕ´Ï´Ù.
-	//¾Æ·¡¿¡ ¼±¾ğµÈ RechargeTime ¸Ş¼­µåµé¸¦ Á¤ÀÇÇÏ·Á¸é method overloading¿¡ ´ëÇÑ Áö½ÄÀÌ ÇÊ¿äÇÕ´Ï´Ù.
-	// ºñÈ¸¿ø Ä«µå ÀÌ¿ëÀÚÀÇ »ç¿ë½Ã°£À» Ãß°¡ÇÕ´Ï´Ù.
-	void RechargeTime(const Card& target, const float& seconds);
-	// ·Î±×ÀÎÇÏ´Â È¸¿øÀÌ¿ëÀÚÀÇ »ç¿ë½Ã°£À» Ãß°¡ÇÕ´Ï´Ù.
-	void RechargeTime(const Member& target, const float& seconds);
+	static PCManager *GetInstance();
+	//?„ë˜??? ì–¸??RechargeTime ë©”ì„œ?œë“¤ë¥??•ì˜?˜ë ¤ë©?method overloading???€??ì§€?ì´ ?„ìš”?©ë‹ˆ??
+	// ë¹„íšŒ??ì¹´ë“œ ?´ìš©?ì˜ ?¬ìš©?œê°„??ì¶”ê??©ë‹ˆ??
+	void RechargeTime( Card& target, const float& seconds);
+	// ë¡œê·¸?¸í•˜???Œì›?´ìš©?ì˜ ?¬ìš©?œê°„??ì¶”ê??©ë‹ˆ??
+	void RechargeTime(Member& target, const float& seconds);
 	// it initiates every initialization and activate terminal  
 	void Initialize();
-	bool QueryNextAction(); // »ç¿ëÀÚ¿¡°Ô ¸í·É¾î¸¦ ¿ä±¸ÇÏ°í, ÀÔ·ÂµÈ ¸í·É¾î¿¡ ´ëÀÀÇÏ´Â ¸Ş¼­µå¸¦ ½ÇÇàÇÕ´Ï´Ù.
-	void LoadPCinfos(); // PC¹æ¿¡ ÀÖ´Â PCµéÀÇ Á¤º¸¸¦ ÆÄÀÏ¿¡¼­ ÀĞ¾î ¿É´Ï´Ù.
-	Card* SearchCard(const int& CardName); // Ä«µå ¹øÈ£¿Í ¸Â´Â Ä«µå¸¦ ¹İÈ¯ÇÏ´Â ÇÔ¼ö. - ¼³°è¿¡ Ãß°¡ ¿ä¸Á
+	bool QueryNextAction();
 };

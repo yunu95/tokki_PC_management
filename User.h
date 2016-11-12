@@ -1,19 +1,19 @@
 #pragma once
-// ÀÎÅÍÆäÀÌ½º ÀÔ´Ï´Ù.
+// ì¸í„°íŽ˜ì´ìŠ¤ ìž…ë‹ˆë‹¤.
 class User
 {
 private:
 protected:
-	// »ý¼ºÀÚ¸¦ protected¿¡ ¼±¾ðÇØ µÐ °ÍÀº User´Â ¼ø¼ö °¡»óÇÔ¼ö¸¸ µé¾î°¡ ÀÖ´Â Å¬·¡½ºÀÌ¹Ç·Î
-	// ÇÔºÎ·Î ÀÎ½ºÅÏ½º°¡ ¸¸µé¾îÁö¸é ¾ÈµÇ±â ¶§¹®ÀÔ´Ï´Ù.
+	// ìƒì„±ìžë¥¼ protectedì— ì„ ì–¸í•´ ë‘” ê²ƒì€ UserëŠ” ìˆœìˆ˜ ê°€ìƒí•¨ìˆ˜ë§Œ ë“¤ì–´ê°€ ìžˆëŠ” í´ëž˜ìŠ¤ì´ë¯€ë¡œ
+	// í•¨ë¶€ë¡œ ì¸ìŠ¤í„´ìŠ¤ê°€ ë§Œë“¤ì–´ì§€ë©´ ì•ˆë˜ê¸° ë•Œë¬¸ìž…ë‹ˆë‹¤.
 	User();
 	~User();
 public:
-	class PC; // PCÀÇ »óÅÂ¸¦ ¹Ý¿µÇØ¾ß ÇÏ¹Ç·Î PC Å¬·¡½º¸¦ ³Ö½À´Ï´Ù.
-	// ¾Æ·¡ µÎ ÇÔ¼ö´Â ¼ø¼ö °¡»óÇÔ¼öÀÔ´Ï´Ù.
-	// »ç¿ë½Ã°£ÀÌ ¸¸·áµÇ¾úÀ» ¶§ target_pc¿¡°Ô °­Á¦Á¾·á¸¦ ¿äÃ»ÇÏ´Â ¸Þ¼­µåÀÔ´Ï´Ù.
+	class PC; // PCì˜ ìƒíƒœë¥¼ ë°˜ì˜í•´ì•¼ í•˜ë¯€ë¡œ PC í´ëž˜ìŠ¤ë¥¼ ë„£ìŠµë‹ˆë‹¤.
+	// ì•„ëž˜ ë‘ í•¨ìˆ˜ëŠ” ìˆœìˆ˜ ê°€ìƒí•¨ìˆ˜ìž…ë‹ˆë‹¤.
+	// ì‚¬ìš©ì‹œê°„ì´ ë§Œë£Œë˜ì—ˆì„ ë•Œ target_pcì—ê²Œ ê°•ì œì¢…ë£Œë¥¼ ìš”ì²­í•˜ëŠ” ë©”ì„œë“œìž…ë‹ˆë‹¤.
 	virtual void AbortUsing(const PC& target_pc) = 0;
-	// »ç¿ëÀÚÀÇ ³²Àº ½Ã°£À» ¼³Á¤ÇÏ´Â ¸Þ¼­µåÀÔ´Ï´Ù.
+	// ì‚¬ìš©ìžì˜ ë‚¨ì€ ì‹œê°„ì„ ì„¤ì •í•˜ëŠ” ë©”ì„œë“œìž…ë‹ˆë‹¤.
 	virtual void SetLeftTime(const float& time) = 0;
 };
 

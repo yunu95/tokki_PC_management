@@ -1,20 +1,25 @@
 #pragma once
 #include "User.h"
 
-// Card´Â µ¥ÀÌÅÍº£ÀÌ½º¿Í ¿¬µ¿µÉ ÇÊ¿ä°¡ ¾ø½À´Ï´Ù.
+// Card???°ì´?°ë² ?´ìŠ¤?€ ?°ë™???„ìš”ê°€ ?†ìŠµ?ˆë‹¤.
 class Card :
 	public User
 {
 private:
-	// Ä«µåÀÇ ÀÏ·Ã¹øÈ£·Î, ´Ù¸¥ Ä«µå¿Í ÁßÃ¸µÉ ¼ö ¾ø´Â Å° °ª ¿ªÇÒÀ» ÇÕ´Ï´Ù.
+	// ì¹´ë“œ???¼ë ¨ë²ˆí˜¸ë¡? ?¤ë¥¸ ì¹´ë“œ?€ ì¤‘ì²©?????†ëŠ” ??ê°???• ???©ë‹ˆ??
 	int card_number;
-	// ºñÈ¸¿ø »ç¿ëÀÚÀÇ ³²Àº ½Ã°£À» Ç¥½ÃÇÕ´Ï´Ù.
+	// ë¹„íšŒ???¬ìš©?ì˜ ?¨ì? ?œê°„???œì‹œ?©ë‹ˆ??
 	float left_time;
-public: //
-	Card(const int& _card_number, const float& _left_time); // »ı¼ºÀÚ - ¸â¹öº¯¼ö¸¦ ÃÊ±âÈ­ ÇÕ´Ï´Ù.
-	~Card(); // ¼Ò¸êÀÚ
+public:
+	// ?ì„±??- ë©¤ë²„ë³€?˜ë? ì´ˆê¸°???©ë‹ˆ??
+	Card(const int& _card_number, const float& _left_time = 0.0f);
+	// lefttime = 0.0f this means default value of second parameter is 0.0f.
+	// you don't have to call constructor specifying both parameters. you only need to specify card_number.
+	~Card(); // ?Œë©¸??
 
+	// both declararitions below are overriding User's methods.
 	void AbortUsing(const PC& target);
 	void SetLeftTime(const float& time);
+	float GetLeftTime()const;
 };
 
