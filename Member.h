@@ -18,5 +18,6 @@ public:
 	// 시간이 다 되었을 때 발동되는 메서드입니다. target PC에게 강제종료를 요청하고,
 	// DB에서 남은 시간을 차감하는 것 또한 요청해야 합니다.
 	void AbortUsing(const PC& target);
+	void SetLeftTime(const float& time);
 };
 

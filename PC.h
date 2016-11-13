@@ -7,6 +7,7 @@ PC방에서 관리되는 PC 하나의 상태를 표현하기 위해 만들어진 클래스입니다.
 class PC
 {
 private:
+	int PC_Number;
 	// 컴퓨터의 사용여부를 표시합니다.
 	bool is_active;
 	// 컴퓨터 전원이 켜져 있는지의 여부를 표시합니다.
@@ -14,7 +15,7 @@ private:
 	// 현재 사용자를 뜻합니다.
 	class User* current_user;
 public:
-	PC();
+	PC(const int& number);
 	~PC();
 	// User가 해당 PC 사용을 시작합니다.
 	bool StartUsing();
@@ -26,5 +27,8 @@ public:
 	bool TurnOnComputer();
 	// 전원을 끕니다.
 	bool TurnOffComputer();
+	
+	bool GetPower_Status();
+	bool Getactive_Status();
 };
 
