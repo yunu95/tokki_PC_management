@@ -67,7 +67,7 @@ bool PCManager::QueryNextAction() {
 		for (string::iterator EachChar = command.begin(); EachChar < command.end();EachChar++)
 			*EachChar = tolower(*EachChar);
 
-		// 커맨드에 따라 필요한 함수를 호출한다.
+		// 커맨드에 따라 필요한 함수를 호출한다. - 분, 시간도 추가할 수 있도록 한다.
 		if (command == "rechargecard") {
 
 			cout << "카드의 일련번호와 추가할 시간을 입력하세요. " << endl;
@@ -109,6 +109,7 @@ bool PCManager::QueryNextAction() {
 				//또 몇 대가 사용중인지 pc방의 상태를 보여준다. - is_active
 				// 이터레이터로 벡터에서 싹 다 훑은 뒤 변수에 저장합니다.
 			
+			cout << "총 PC의 대수 :";
 			LoadPCinfos(); // PC의 개수를 보여 줍니다. 
 
 			int On_count = 0;
@@ -129,7 +130,10 @@ bool PCManager::QueryNextAction() {
 			cout << "현재 켜져 있는 PC의 대수는 " << On_count << " 대 입니다." <<endl;
 			cout << "현재 꺼져 있는 PC의 대수는 " << OFF_count << " 대 입니다." << endl;
 			cout << "현재 사용되고 있는 PC의 대수는 " << active_count << " 대 입니다." << endl;
-
+			cout << "잔여 좌석 : " << active_count << "/";
+			LoadPCinfos();
+			
+		
 			cin.clear();
 			cin.ignore(INT_MAX, '\n');
 
@@ -177,7 +181,7 @@ void PCManager::LoadPCinfos()
 	while (!inputFile.eof())
 	{
 		inputFile >> inputString;
-		cout << "PC들의 개수 : " << inputString << endl;
+		cout << inputString << endl;
 	}
 	inputFile.close();
 }
