@@ -36,7 +36,10 @@ public:
 	void RechargeTime(const Member& target, const float& seconds);
 	// it initiates every initialization and activate terminal  
 	void Initialize();
-	bool QueryNextAction(); // 사용자에게 명령어를 요구하고, 입력된 명령어에 대응하는 메서드를 실행합니다.
-	void LoadPCinfos(); // PC방에 있는 PC들의 정보를 파일에서 읽어 옵니다.
-	void CheckoutCard(Card& card); // 카드를 초기화합니다. 정보는 시간뿐이니 시간을 0으로 만듭니다.
+	// 사용자에게 명령어를 요구하고, 입력된 명령어에 대응하는 메서드를 실행합니다.
+	bool QueryNextAction();
+	// PC방에 있는 PC들의 정보를 파일에서 읽어 옵니다.
+	void LoadPCinfos();
+	// 카드를 초기화합니다. 정보는 시간뿐이니 시간을 0으로 만듭니다.
+	void CheckoutCard(Card& card); 
 };
