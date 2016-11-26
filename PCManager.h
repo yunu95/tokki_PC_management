@@ -1,7 +1,9 @@
 #pragma once
 #include <vector>
 #include <thread> // 스레드는 한개만 만들면 됨.
-
+#include <stdio.h>
+#include <WinSock2.h>
+#include <process.h>
 /*
 모든 PC 객체들의 인스턴스들을 포함하고 있다. PC방의 카운터 PC에 해당되는 객체이다. - 싱글톤 패턴 적용.
 */
@@ -15,7 +17,8 @@ class PCManager
 {
 private:
 	PCManager();
-	~PCManager(); 
+	~PCManager();
+	void KeepAccepting();
 	// 싱글톤 패턴이기 때문에, 클래스 외부에서 함부로 객체를 만들면 안 됩니다. 따라서 생성자는 private로 선언됩니다. 
 	static PCManager* instance; // 이 클래스의 유일한 객체를 가리키는 포인터입니다.
 	std::vector<std::string> commandsList;
@@ -23,14 +26,21 @@ private:
 	std::vector<class PC*> pcs;
 	// 모든 Card들의 인스턴스들은 cards에 들어있습니다.
 	std::vector<class Card*> cards;
-	
+	WSADATA wsaData;
+	SOCKET serv_sock;
+	SOCKET DBserv_sock;
+	SOCKADDR_IN serv_addr = { 0 };               // 초기화
+	std::vector<SOCKET> clnt_socks;
+	std::thread pcs_updater_thread;
+	std::thread accept_thread;
+	std::vector<std::thread> RecieveThreads;
 	float PlusTime;
 	int CardNumber;
 public:
 	std::thread Updater; // 매 초마다 LoadPCinfos()를 호출하고, 각 PC들의 상태를 업데이트하는 thread
 	static PCManager *GetInstance(); // 정적 메서드로서, 클래스의 객체를 만들 때 사용합니다.
-	//아래에 선언된 RechargeTime 메서드들를 정의하려면 method overloading에 대한 지식이 필요합니다.
-	// 비회원 카드 이용자의 사용시간을 추가합니다.
+									 //아래에 선언된 RechargeTime 메서드들를 정의하려면 method overloading에 대한 지식이 필요합니다.
+									 // 비회원 카드 이용자의 사용시간을 추가합니다.
 	void RechargeTime(Card& target, const float& seconds);
 	// 로그인하는 회원이용자의 사용시간을 추가합니다.
 	void RechargeTime(const Member& target, const float& seconds);
