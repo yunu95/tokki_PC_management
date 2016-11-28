@@ -18,6 +18,7 @@ class PCManager
 private:
 	PCManager();
 	~PCManager();
+	// It waits for the message from pc clients.
 	void KeepAccepting();
 	// 싱글톤 패턴이기 때문에, 클래스 외부에서 함부로 객체를 만들면 안 됩니다. 따라서 생성자는 private로 선언됩니다. 
 	static PCManager* instance; // 이 클래스의 유일한 객체를 가리키는 포인터입니다.
@@ -28,11 +29,13 @@ private:
 	std::vector<class Card*> cards;
 	WSADATA wsaData;
 	SOCKET serv_sock;
-	SOCKET DBserv_sock;
 	SOCKADDR_IN serv_addr = { 0 };               // 초기화
 	std::vector<SOCKET> clnt_socks;
+	//pc들의 현 상태를 매 초마다 시간에 맞게 업데이트 시켜주는 스레드입니다.
 	std::thread pcs_updater_thread;
+	// accept 스레드는 pc가 매니저에 접속하는 것을 대기하면서, pc가 접속하면 연결을 만들어주는 스레드
 	std::thread accept_thread;
+	// ReceiveThreads에 들어간 스레드들은 한번 pc와 연결이 되면 그 pc들로부터 어떤 연락이 올지 계속 대기하는 스레드
 	std::vector<std::thread> RecieveThreads;
 	float PlusTime;
 	int CardNumber;

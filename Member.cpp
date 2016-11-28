@@ -12,7 +12,8 @@ Member::~Member()
 
 }
 
-void Member::AbortUsing(const PC& target) {
+void Member::AbortUsing(const PC& target)  
+{
 
 }
 

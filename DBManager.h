@@ -1,9 +1,11 @@
 #include <iostream>
 #include <cstring>
+#include <WinSock2.h>
 #pragma once
 /*
 원격 DataBase의 정보를 찾아 반환하거나 정보를 업데이트시켜준다.
 */
+class Member;
 class DBManager
 {
 private:
@@ -13,9 +15,16 @@ private:
 	~DBManager();
 	// 아래의 포인터는 이 클래스의 유일한 객체를 가리킵니다.
 	static DBManager* instance;
+	const char* IP = "210.94.181.91";
+	const int PORT = 8024;
+	const int BUFSIZE = 100;	
+
+	SOCKET clientsock;
+	WSADATA wsa;
+	struct sockaddr_in sockinfo;
+
 public:
-	class Member;
-	
+
 	/*
 	// 데이터베이스에 해당 id,password를 만족하는 사용자가 있는지 확인한다.
 	bool Login(std::string id,std::string password);
@@ -27,8 +36,14 @@ public:
 	Member GetMemberinfo(int key);
 	// DB에 있는 회원의 정보를 업데이트한다. 실패하면 false를 반환한다.
 	*/
-	
-	bool UpdateMemberinfo(const Member& info);
+	Member GetMemberinfo(const char* id,const char* password);
+	bool Recharge();
+	//what register method needs | (name) | (age) | (phonenum) | (id) | (password)
+	//	| (psw_question) | (psw_answer)
+
+	bool Register(char* name, char* age, char* phonenum,char* id,char* passwd,char* question,char* psw_answer);
+	bool Register(char* WholeMessage);
+	bool AddTime(char* id, int time);
 	// 싱글톤 객체의 유일한 인스턴스를 참조하기 위해 쓰이는 Getter메서드.
 	static DBManager* GetInstance();
 };

@@ -1,5 +1,6 @@
 #pragma once
 // 인터페이스 입니다.
+	class PC; // PC의 상태를 반영해야 하므로 PC 클래스를 넣습니다.
 class User
 {
 private:
@@ -9,7 +10,6 @@ protected:
 	User();
 	~User();
 public:
-	class PC; // PC의 상태를 반영해야 하므로 PC 클래스를 넣습니다.
 	// 아래 두 함수는 순수 가상함수입니다.
 	// 사용시간이 만료되었을 때 target_pc에게 강제종료를 요청하는 메서드입니다.
 	virtual void AbortUsing(const PC& target_pc) = 0;

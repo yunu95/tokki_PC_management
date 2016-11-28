@@ -7,6 +7,7 @@
 #include "Card.h"
 #include "Member.h" 
 #include "PC.h"
+#include "DBManager.h"
 #define _CRT_SECURE_NO_WARNINGS
 #pragma comment (lib , "ws2_32.lib")
 
@@ -288,13 +289,13 @@ void PCManager::KeepAccepting()
 		clnt_sock = accept(serv_sock, (SOCKADDR*)&clnt_addr, &size);
 		clnt_socks.push_back(clnt_sock);
 		RecieveThreads.push_back(
-			std::thread([](SOCKET DBserv_sock, SOCKET ClientSocket, SOCKADDR *client_address, int* SIZE)
+			std::thread([](SOCKET ClientSocket, SOCKADDR *client_address, int* SIZE)
 		{
 			while (true)
 			{
 				char buf[100];
 				char message[100];
-				int recvsize = recv(ClientSocket, buf, sizeof(buf), 0);
+				int recvsize = recv(ClientSocket, buf, 100, 0);
 				if (recvsize <= 0)
 				{
 					printf("fail code %d\n", recvsize);
@@ -310,9 +311,31 @@ void PCManager::KeepAccepting()
 				{
 				}
 				if (strncmp(buf, "login     ", 10) == 0)
-					send(DBserv_sock, buf, 100, 0);
+				{
+					char* id = buf + 10;
+					char* pswd = nullptr;
+					for (char* i = buf + 10; true; i++)
+					{
+						if (*i == ';')
+							if (pswd)
+							{
+								*i = '\0';
+								break;
+							}
+							else
+							{
+								*i = '\0';
+								pswd = i + 1;
+							}
+					}
+					DBManager::GetInstance()->GetMemberinfo(id, pswd);
+					if (buf[0] == 'm')
+					{
+
+					}
+				}
 			}
-		}, DBserv_sock, clnt_sock, (SOCKADDR*)&clnt_addr, &size)
+		}, clnt_sock, (SOCKADDR*)&clnt_addr, &size)
 			);
 		if (clnt_sock == SOCKET_ERROR)
 		{
