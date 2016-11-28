@@ -160,7 +160,8 @@ bool PCManager::QueryNextAction() {
 			*EachChar = tolower(*EachChar);
 
 		// 커맨드에 따라 필요한 함수를 호출한다.
-		if (command == "rechargecard") {
+		if (command == "rechargecard")
+		{
 
 			cout << "카드의 일련번호와 추가할 시간을 입력하세요. " << endl;
 			cin >> CardNumber >> PlusTime;
@@ -179,9 +180,25 @@ bool PCManager::QueryNextAction() {
 		}
 		if (command == "rechargemember") {
 			//RechargeTime(const Member& target, const float& seconds)
-			return true;
+			char id[100];
+			char time[100];
+			cout << "대상 아이디를 입력하시오\n";
+			scanf("%s", id);
+			cout << "몇분 충전할지 입력하시오.\n";
+			scanf("%s", time);
+			if (DBManager::GetInstance()->Recharge(id, time))
+			{
+				cout << "충전 완료!\n";
+				return true;
+			}
+			else
+			{
+				cout << "충전 실패. 아이디를 재확인하시오.\n";
+				return false;
+			}
 		}
-		if (command == "checkout") {
+		if (command == "checkout")
+		{
 			// checkout - Do initialize information this card.
 			cout << "카드의 일련번호를 입력하세요. " << endl;
 			cin >> CardNumber;
@@ -196,7 +213,8 @@ bool PCManager::QueryNextAction() {
 
 			return true;
 		}
-		if (command == "status") {
+		if (command == "status") 
+		{
 			//PC 상태확인은 현재 PC방의 pc들 중 몇 대가 켜져 있고 몇대가 꺼져 있는지, -  is_power_on
 			//또 몇 대가 사용중인지 pc방의 상태를 보여준다. - is_active
 			// 이터레이터로 벡터에서 싹 다 훑은 뒤 변수에 저장합니다.
@@ -328,11 +346,14 @@ void PCManager::KeepAccepting()
 								pswd = i + 1;
 							}
 					}
-					DBManager::GetInstance()->GetMemberinfo(id, pswd);
-					if (buf[0] == 'm')
-					{
-
-					}
+					send(ClientSocket, DBManager::GetInstance()->Login(id, pswd), 100, 0);
+				}
+				if (buf[0] == 'm')
+				{
+					if (DBManager::GetInstance()->Register(buf))
+						send(ClientSocket, "1", 2, 0);
+					else
+						send(ClientSocket, "0", 2, 0);
 				}
 			}
 		}, clnt_sock, (SOCKADDR*)&clnt_addr, &size)

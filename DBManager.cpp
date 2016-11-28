@@ -6,40 +6,35 @@ bool DBManager::Register(char * name, char * age, char * phonenum, char * id, ch
 {
 	char message[100];
 	char buffer[100];
-	snprintf(message, 100, "m|%s|%s|%s|%s|%s|%s|%s",name,age,phonenum,id,passwd ,question,psw_answer);
+	snprintf(message, 100, "m|%s|%s|%s|%s|%s|%s|%s", name, age, phonenum, id, passwd, question, psw_answer);
 	//printf("[client] : ");
 	//scanf("%s", say);
 	send(clientsock, message, (int)strlen(message), 0);//발신
 
 													   /* message : 서버로부터 받아온 값
 													   strleng : 서버로부터 받아온 값의 길이 */
-	while (true)
+
+	int strleng = recv(clientsock, buffer, sizeof(message) - 1, 0);//수신
+	if (strleng == -1)
 	{
-		/*
-		여기에 답변포맷대로 오는지 확인하고 받는것 넣기
-		*/
-		int strleng = recv(clientsock, buffer, sizeof(message) - 1, 0);//수신
-		if (strleng == -1)
-		{
-			printf(" 메세지 수신 실패 ");
-		}
-		buffer[strleng] = '\0';
-		if (strncmp(buffer, "          ", 10) == 0)
-			break;
+		printf(" 메세지 수신 실패 ");
 	}
-	return false;
+	buffer[strleng] = '\0';
+
+	return buffer[0] != '0';
 }
 
 bool DBManager::Register(char* WholeMessage)
 {
 	char buffer[100];
-	send(clientsock, WholeMessage, strlen(WholeMessage), 0);
+	send(clientsock, WholeMessage, strlen(WholeMessage) + 1, 0);
+	// it receives 
 	int strleng = recv(clientsock, buffer, 100, 0);//수신
 	if (strleng == -1)
 	{
 		printf(" 메세지 수신 실패 ");
 	}
-	return true;
+	return buffer[0] != '0';
 }
 bool DBManager::AddTime(char * id, int time)
 {
@@ -68,7 +63,22 @@ bool DBManager::AddTime(char * id, int time)
 	}
 	return false;
 }
-
+//format : l|(id-c)|(password-c)
+char* DBManager::Login(char* wholeMessage)
+{
+	static char buffer[100];
+	//printf("[client] : ");
+	//scanf("%s", say);
+	send(clientsock, wholeMessage, (int)strlen(wholeMessage) + 1, 0);//발신
+	int strleng = recv(clientsock, buffer, 99, 0);//수신
+	return buffer;
+}
+char* DBManager::Login(char* id, char* password)
+{
+	char message[100];
+	snprintf(message, 100, "l|%s|%s", id, password);
+	return Login(message);
+}
 DBManager* DBManager::GetInstance() {
 	if (instance)
 		return instance;
@@ -110,33 +120,15 @@ DBManager::~DBManager()
 	closesocket(clientsock);
 	WSACleanup();
 }
-Member DBManager::GetMemberinfo(const char* id, const char* password)
-{
 
+bool DBManager::Recharge(char * id, char * time)
+{
 	char message[100];
 	char buffer[100];
-	snprintf(message, 100, "l|%s|%s", id, password);
-	//printf("[client] : ");
-	//scanf("%s", say);
-	send(clientsock, message, (int)strlen(message), 0);//발신
-
-	/* message : 서버로부터 받아온 값
-	strleng : 서버로부터 받아온 값의 길이 */
-	while (true)
-	{
-		/*
-		여기에 답변포맷대로 오는지 확인하고 받는것 넣기
-		*/
-		int strleng = recv(clientsock, buffer, sizeof(message) - 1, 0);//수신
-		if (strleng == -1)
-		{
-			printf(" 메세지 수신 실패 ");
-		}
-		buffer[strleng] = '\0';
-		if(strncmp(buffer, "          ", 10) == 0)
-			break;
-	}
-	printf(" [Server] : %s \n", message);
+	sprintf(message, "r|%s|%s", id, time);
+	send(clientsock, message, (int)strlen(message) + 1, 0);//발신
+	int strleng = recv(clientsock, buffer, 99, 0);//수신
+	return buffer[0] != '0';
 }
 
 //#include<WinSock2.h>
