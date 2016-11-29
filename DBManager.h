@@ -16,7 +16,7 @@ private:
 	// 아래의 포인터는 이 클래스의 유일한 객체를 가리킵니다.
 	static DBManager* instance;
 	const char* IP = "210.94.181.91";
-	const int PORT = 8027;
+	const int PORT = 8029;
 	const int BUFSIZE = 100;	
 
 	SOCKET clientsock;
@@ -43,6 +43,7 @@ public:
 	bool Register(char* name, char* age, char* phonenum,char* id,char* passwd,char* question,char* psw_answer);
 	bool Register(char* WholeMessage);
 	bool AddTime(char* id, int time);
+	bool Shutdown(char* id, int used_time);
 	char* Login(char* wholeMessage);
 	char* Login(char* id,char* password);
 	// 싱글톤 객체의 유일한 인스턴스를 참조하기 위해 쓰이는 Getter메서드.

@@ -23,7 +23,16 @@ bool DBManager::Register(char * name, char * age, char * phonenum, char * id, ch
 
 	return buffer[0] != '0';
 }
-
+bool DBManager::Shutdown(char* id, int used_time)
+{
+	char message[100];
+	char buffer[100];
+	sprintf(message, "s|%s|%d", id, used_time);
+	send(clientsock, message, strlen(message) + 1, 0);
+	// it receives 
+	int strleng = recv(clientsock, buffer, 100, 0);//¼ö½Å
+	return buffer[0] != '0';
+}
 bool DBManager::Register(char* WholeMessage)
 {
 	char buffer[100];
