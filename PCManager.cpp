@@ -14,7 +14,7 @@
 
 // these somesome codes below contain everything needed for singletone desgin pattern
 // this class pointer is the only instance of this class
-PCManager* PCManager::instance = nullptr;;
+PCManager* PCManager::instance = nullptr;
 
 // this method is used to get instance of this class
 PCManager* PCManager::GetInstance() {
@@ -154,7 +154,8 @@ bool PCManager::QueryNextAction() {
 	cout << "\n";
 	string command;
 	getline(cin, command);
-	for (string each : commandsList) {
+	for (string each : commandsList)
+	{
 		// 입력된 명령어를 모두 소문자로 바꿔준다.
 		for (string::iterator EachChar = command.begin(); EachChar < command.end(); EachChar++)
 			*EachChar = tolower(*EachChar);
@@ -213,7 +214,7 @@ bool PCManager::QueryNextAction() {
 
 			return true;
 		}
-		if (command == "status") 
+		if (command == "status")
 		{
 			//PC 상태확인은 현재 PC방의 pc들 중 몇 대가 켜져 있고 몇대가 꺼져 있는지, -  is_power_on
 			//또 몇 대가 사용중인지 pc방의 상태를 보여준다. - is_active
@@ -307,8 +308,9 @@ void PCManager::KeepAccepting()
 		clnt_sock = accept(serv_sock, (SOCKADDR*)&clnt_addr, &size);
 		clnt_socks.push_back(clnt_sock);
 		RecieveThreads.push_back(
-			std::thread([](SOCKET ClientSocket, SOCKADDR *client_address, int* SIZE)
+			std::thread([](SOCKET ClientSocket, SOCKADDR *client_address, int* SIZE, std::vector<Card*>& cards, std::vector<PC*>& pcs)
 		{
+			PC* pc;
 			while (true)
 			{
 				char buf[100];
@@ -327,11 +329,25 @@ void PCManager::KeepAccepting()
 				// %3d is a pc number
 				if (strncmp(buf, "report    ", 10) == 0)
 				{
+					atoi("11");
+					bool is_starting;
+					pc = pcs[atoi(buf + 11)];
+					if (buf[10] == '1')
+					{
+						is_starting = true;
+						pc->TurnOnComputer();
+					}
+					else
+					{
+						is_starting = false;
+						pc->TurnOffComputer();
+					}
 				}
 				if (strncmp(buf, "login     ", 10) == 0)
 				{
 					char* id = buf + 10;
 					char* pswd = nullptr;
+					char buffer[100];
 					for (char* i = buf + 10; true; i++)
 					{
 						if (*i == ';')
@@ -346,7 +362,21 @@ void PCManager::KeepAccepting()
 								pswd = i + 1;
 							}
 					}
-					send(ClientSocket, DBManager::GetInstance()->Login(id, pswd), 100, 0);
+					printf("Send retval : %d",send(ClientSocket, DBManager::GetInstance()->Login(id, pswd), 100, 0));
+				}
+				if (strncmp(buf, "rcard     ", 10) == 0)
+				{
+					int card_num = atoi(buf + 10);
+					if (cards[card_num]->GetLeftTime() <= 0.0)
+					{
+						send(ClientSocket, "0", 2, 0);
+					}
+					else
+					{
+						pc->StartUsing(cards[card_num]);
+						send(ClientSocket, "1", 2, 0);
+					}
+
 				}
 				if (buf[0] == 'm')
 				{
@@ -356,7 +386,7 @@ void PCManager::KeepAccepting()
 						send(ClientSocket, "0", 2, 0);
 				}
 			}
-		}, clnt_sock, (SOCKADDR*)&clnt_addr, &size)
+		}, clnt_sock, (SOCKADDR*)&clnt_addr, &size, cards, pcs)
 			);
 		if (clnt_sock == SOCKET_ERROR)
 		{

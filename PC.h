@@ -18,7 +18,7 @@ public:
 	PC(const int& number);
 	~PC();
 	// User가 해당 PC 사용을 시작합니다.
-	bool StartUsing();
+	bool StartUsing(User* user);
 	// USer가 해당 PC 사용을 중지합니다.
 	bool StopUsing();
 	// User가 시간이 다 만료되어 사용이 중단됩니다. 이 메서드는 User에게서 호출됩니다.
@@ -27,7 +27,6 @@ public:
 	bool TurnOnComputer();
 	// 전원을 끕니다.
 	bool TurnOffComputer();
-	
 	bool GetPower_Status();
 	bool Getactive_Status();
 };

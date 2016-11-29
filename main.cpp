@@ -3,10 +3,8 @@
 #include "PCManager.h"
 #include "DBManager.h"
 #include "Member.h"
-int main() {
-	DBManager::GetInstance()->Login("RedMenace","123456");
-	DBManager::GetInstance()->Recharge("RedMenace", "101");
-	DBManager::GetInstance()->Shutdown("RedMenace",100);
+int main() 
+{
 	PCManager::GetInstance()->Initialize();
 
 	return 0;

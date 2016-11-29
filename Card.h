@@ -1,6 +1,6 @@
 #pragma once
 #include "User.h"
-
+#include <string>
 // Card는 데이터베이스와 연동될 필요가 없습니다.
 class Card :
 	public User
@@ -23,5 +23,6 @@ public:
 	int GetCardNo();
 	float GetLeftTime()const;
 	void PlusLeftTime(const float& time);
+	virtual std::string GetIdentifier();
 };
 
