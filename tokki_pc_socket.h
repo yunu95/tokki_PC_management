@@ -2,6 +2,7 @@
 #include<cstdio>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
@@ -26,7 +27,7 @@ class Socket
 	char* argv;
 	Mysql db;
 	char buf[BUF_SIZE];
-	char *tmp;
+	
 public:
 	Socket();
 	Socket(int argc, char* argv);
