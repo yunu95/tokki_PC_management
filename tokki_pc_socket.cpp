@@ -66,30 +66,86 @@ void Socket::Start()
 				}
 				else
 				{
+                    char *command;
+					memset(buf,'\0',1024);
 					str_len = read(i, buf, BUF_SIZE);
-					tmp=strtok(buf,"|");
+					printf("buf : %s strlen : %d\n",buf,str_len);
+					command=strtok(buf,"|");
 					
-					if (str_len == 0)
+					if (str_len <= 0)
 					{//receive close signal
 						FD_CLR(i, &reads);
 						close(i);
 						printf("close client : %d \n", i);
 					}
-					else if(strcmp(tmp,"l"))
+					else if(strcmp(command,"l")==0)
 					{//log in
-						if(db.login(strtok(NULL,"|"),strtok(NULL,"|")))
-							write(i,"true",5);
+                        char *id=strtok(NULL,"|");
+                        char *psw=strtok(NULL,"|");
+						char *result;
+						if(result=db.login(id,psw))
+							write(i,result,strlen(result));
 						else
-							write(i,"false",6);
+							write(i,"0",3);
 					}
-					else if(strcmp(tmp,"m"))
+					else if(strcmp(command,"m")==0)
 					{//membership(register)
-						if(db.membership(strtok(NULL,"|"),atoi(strtok(NULL,"|")),strtok(NULL,"|"),strtok(NULL,"|"),strtok(NULL,"|"),strtok(NULL,"|"),strtok(NULL,"|")))
+						char *name=strtok(NULL,"|");
+						int age=atoi(strtok(NULL,"|"));
+						char *phonenum=strtok(NULL,"|");
+						char *id=strtok(NULL,"|");
+						char *password=strtok(NULL,"|");
+						char *psw_question=strtok(NULL,"|");
+						char *psw_answer=strtok(NULL,"|");
+						char *email=strtok(NULL,"|");
+						
+						if(db.membership(name,age,phonenum,id,password,psw_question,psw_answer,email))
 						{
-							write(i,"true",5);
+							write(i,"1",5);
 						}
 						else
-							write(i,"false",6);
+							write(i,"0",6);
+					}
+					else if(strcmp(command,"r")==0)
+					{//recharge
+						char *id=strtok(NULL,"|");
+						int rc=atoi(strtok(NULL,"|"));
+						printf("id : %s  rc : %d\n",id,rc );
+						char *result;
+						if(result=db.recharge(id,rc))
+						{
+							write(i,result,strlen(result));
+						}
+						else
+							write(i,"0",2);
+					}
+					else if(strcmp(command,"lp")==0)
+					{//show left time
+						char *id=strtok(NULL,"|");
+						
+						char *result;
+						if(result=db.LeftTimeShow(id))
+						{
+							write(i,result,strlen(result));
+						}
+						else
+							write(i,"0",2);
+					}
+					else if(strcmp(command,"s")==0)
+					{//shutdown
+						char *id=strtok(NULL,"|");
+						int ut=atoi(strtok(NULL,"|"));//using time
+						
+						printf("id : %s  rc : %d\n",id,ut );
+						
+						char *result;
+						
+						if(result=db.ShutDown(id,ut))
+						{
+							write(i,result,strlen(result));
+						}
+						else
+							write(i,"0",2);
 					}
 					else
 					{//echo
@@ -103,5 +159,5 @@ void Socket::Start()
 
 Socket::~Socket()
 {//close socket
-	close(serv_sock);
+	
 }
