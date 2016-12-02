@@ -24,5 +24,6 @@ public:
 	float GetLeftTime()const;
 	void PlusLeftTime(const float& time);
 	virtual std::string GetIdentifier();
+	virtual float GetLeftTime() override;
 };
 

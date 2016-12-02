@@ -9,6 +9,7 @@
 #include "PC.h"
 #include "DBManager.h"
 #define _CRT_SECURE_NO_WARNINGS
+#define BUF_SIZE 1024
 #pragma comment (lib , "ws2_32.lib")
 
 
@@ -82,48 +83,8 @@ PCManager::PCManager()
 							   //-------------------------------------------
 	int size = sizeof(SOCKADDR_IN);
 
-	//-------------클라이언트 접속 대기, connect를 하면 리턴함-------------
-	//clnt_sock = accept(serv_sock, (SOCKADDR*)&clnt_addr, &size);
-	//if (clnt_sock == SOCKET_ERROR)
-	//{
-	//	printf("accept() Error\n");
-	//	continue;
-	//}
-	//----------------------------------------------------------------------
-	//printf("클라이언트 접속\n");
-	//printf("IP : %s, Port : %d\n", inet_ntoa(clnt_addr.sin_addr), clnt_addr.sin_port);
-	//while (true)
-	//{
-	//	char buf[100];
-	//	int recvsize = recv(clnt_sock, buf, sizeof(buf), 0);
-	//	if (recvsize <= 0)
-	//	{
-	//		printf("fail code %d\n", recvsize);
-	//		continue;
-	//	}
-	//	//-------------------------------------------
-	//	buf[recvsize] = '\0';
-	//	printf("client >> %s\n", buf);
-	//}
-	//this thread constantly accepts all the incoming client.
 	accept_thread = std::thread(&PCManager::KeepAccepting, this);
-	//accept_thread = std::thread(
-	//	[](int)
-	//{
-	//	while (true)
-	//	{
-	//		SOCKET clnt_socket;
-	//		clnt_socket = accept()
-	//	}
-	//},1
-	//);
-	//-----------수신 스레드 생성-------------
-	//RecvThreads.push_back(std::thread([]() {
-
-	//}));
-	//_beginthread(RecvThread[0], NULL, (void*)clnt_sock);
-	//-----------------------------------------
-
+	Updater = std::thread(&PCManager::update_pcs, this);
 
 }
 // 여기는 프로그램이 실행되는 공간이 아님. 단지 필드일 뿐
@@ -254,6 +215,7 @@ bool PCManager::QueryNextAction() {
 	return true;
 }
 void PCManager::Initialize() {
+
 	while (QueryNextAction());
 }
 
@@ -313,9 +275,9 @@ void PCManager::KeepAccepting()
 			PC* pc;
 			while (true)
 			{
-				char buf[101];
+				char buf[BUF_SIZE+1];
 				char message[100];
-				int recvsize = recv(ClientSocket, buf, 100, 0);
+				int recvsize = recv(ClientSocket, buf, BUF_SIZE, 0);
 				if (recvsize <= 0)
 				{
 					printf("fail code %d\n", recvsize);
@@ -336,6 +298,20 @@ void PCManager::KeepAccepting()
 		//----------------------------------------------------------------------
 		printf("클라이언트 접속\n");
 		printf("IP : %s, Port : %d\n", inet_ntoa(clnt_addr.sin_addr), clnt_addr.sin_port);
+	}
+}
+void PCManager::update_pcs()
+{
+	while (true)
+	{
+		for (PC* each : pcs)
+		{
+			if (each->Getactive_Status())
+			{
+				each->GetUser()->SetLeftTime(each->GetUser()->GetLeftTime() - 1);
+			}
+		}
+		Sleep(1000);
 	}
 }
 bool PCManager::DealWithMessage(SOCKET ClientSocket, SOCKADDR *client_address, PC** pc, char* message) {
@@ -366,7 +342,6 @@ bool PCManager::DealWithMessage(SOCKET ClientSocket, SOCKADDR *client_address, P
 	{
 		char* id = message + 10;
 		char* pswd = nullptr;
-		char buffer[100];
 		for (char* i = message + 10; true; i++)
 		{
 			if (*i == ';')
@@ -381,7 +356,13 @@ bool PCManager::DealWithMessage(SOCKET ClientSocket, SOCKADDR *client_address, P
 					pswd = i + 1;
 				}
 		}
-		char * temp = DBManager::GetInstance()->Login(id, pswd);
+		float leftsecs;
+		char * temp = DBManager::GetInstance()->Login(id, pswd, &leftsecs);
+		if (temp[0] != '0')
+		{
+			(*pc)->StartUsing(new Member(id));
+			(*pc)->GetUser()->SetLeftTime(leftsecs);
+		}
 		printf("Send retval : %d\n", send(ClientSocket, temp, 100, 0));
 		printf("Send retval : %d\n", send(ClientSocket, temp, 100, 0));
 		//printf("Send retval : %d\n", send(ClientSocket, DBManager::GetInstance()->Login(id, pswd), 100, 0));
@@ -404,6 +385,9 @@ bool PCManager::DealWithMessage(SOCKET ClientSocket, SOCKADDR *client_address, P
 	}
 	if (strncmp(message, "status    ", 10) == 0)
 	{
+		snprintf(response, 100, "%s|%d", (*pc)->GetUser()->GetIdentifier().c_str(), (*pc)->GetUser()->GetLeftTime());
+		send(ClientSocket, response, 100, 0);
+		send(ClientSocket, response, 100, 0);
 	}
 	if (message[0] == 'm')
 	{

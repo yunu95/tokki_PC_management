@@ -68,3 +68,8 @@ bool PC::Getactive_Status()
 {
 	return this->is_active;
 }
+
+User * PC::GetUser()
+{
+	return current_user;
+}

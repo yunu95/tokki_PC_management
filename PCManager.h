@@ -20,6 +20,8 @@ private:
 	~PCManager();
 	// It waits for the message from pc clients.
 	void KeepAccepting();
+	void update_pcs();
+
 	// 싱글톤 패턴이기 때문에, 클래스 외부에서 함부로 객체를 만들면 안 됩니다. 따라서 생성자는 private로 선언됩니다. 
 	static PCManager* instance; // 이 클래스의 유일한 객체를 가리키는 포인터입니다.
 	std::vector<std::string> commandsList;

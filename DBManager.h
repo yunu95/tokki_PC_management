@@ -17,7 +17,7 @@ private:
 	static DBManager* instance;
 	const char* IP = "210.94.181.91";
 	const int PORT = 8029;
-	const int BUFSIZE = 100;	
+	const int BUFSIZE = 100;
 
 	SOCKET clientsock;
 	WSADATA wsa;
@@ -36,16 +36,17 @@ public:
 	Member GetMemberinfo(int key);
 	// DB에 있는 회원의 정보를 업데이트한다. 실패하면 false를 반환한다.
 	*/
-	bool Recharge(char* id,char* time);
+	bool Recharge(char* id, char* time);
 	//what register method needs | (name) | (age) | (phonenum) | (id) | (password)
 	//	| (psw_question) | (psw_answer)
 
-	bool Register(char* name, char* age, char* phonenum,char* id,char* passwd,char* question,char* psw_answer);
+	bool Register(char* name, char* age, char* phonenum, char* id, char* passwd, char* question, char* psw_answer);
 	bool Register(char* WholeMessage);
 	bool AddTime(char* id, int time);
 	bool Shutdown(char* id, int used_time);
 	char* Login(char* wholeMessage);
-	char* Login(char* id,char* password);
+	char* Login(char* id, char* password);
+	char* DBManager::Login(char* id, char* password, float* left_time);
 	// 싱글톤 객체의 유일한 인스턴스를 참조하기 위해 쓰이는 Getter메서드.
 	static DBManager* GetInstance();
 };

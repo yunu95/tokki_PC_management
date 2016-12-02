@@ -17,4 +17,5 @@ public:
 	// 사용자의 남은 시간을 설정하는 메서드입니다.
 	virtual void SetLeftTime(const float& time) = 0;
 	virtual std::string GetIdentifier() = 0;
+	virtual float GetLeftTime() = 0;
 };

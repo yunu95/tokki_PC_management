@@ -39,3 +39,8 @@ std::string Card::GetIdentifier()
 {
 	return std::string("card " + card_number);
 }
+
+float Card::GetLeftTime()
+{
+	return left_time;
+}

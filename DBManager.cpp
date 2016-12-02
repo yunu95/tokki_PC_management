@@ -35,8 +35,9 @@ bool DBManager::Shutdown(char* id, int used_time)
 }
 bool DBManager::Register(char* WholeMessage)
 {
-	char buffer[100];
-	send(clientsock, WholeMessage, strlen(WholeMessage) + 1, 0);
+	char buffer[101];
+	int temp;
+	send(clientsock, WholeMessage, temp = strlen(WholeMessage) + 1, 0);
 	// it receives 
 	int strleng = recv(clientsock, buffer, 100, 0);//¼ö½Å
 	if (strleng == -1)
@@ -84,9 +85,22 @@ char* DBManager::Login(char* wholeMessage)
 }
 char* DBManager::Login(char* id, char* password)
 {
-	char message[100];
-	snprintf(message, 100, "l|%s|%s", id, password);
+	char message[1024];
+	snprintf(message, 1024, "l|%s|%s", id, password);
 	return Login(message);
+}
+char* DBManager::Login(char* id, char* password, float* left_time)
+{
+	char* ret_value = Login(id, password);
+	if (ret_value[0] == '0')
+		return ret_value;	char* minute;
+	char* seconds;
+	minute = ret_value;
+	for (seconds = ret_value; *seconds != ':'; seconds++);
+	*seconds = '\0';
+	seconds++;
+	*left_time = ((float)atoi(minute))*60.0f + ((float)atoi(seconds));
+	return ret_value;
 }
 DBManager* DBManager::GetInstance() {
 	if (instance)

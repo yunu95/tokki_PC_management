@@ -22,5 +22,6 @@ public:
 	virtual void AbortUsing(const PC& target) override;
 	virtual void SetLeftTime(const float& time) override;
 	virtual std::string GetIdentifier() override;
+	virtual float GetLeftTime() override;
 };
 

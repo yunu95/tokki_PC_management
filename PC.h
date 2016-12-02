@@ -29,5 +29,6 @@ public:
 	bool TurnOffComputer();
 	bool GetPower_Status();
 	bool Getactive_Status();
+	User* GetUser();
 };
 
