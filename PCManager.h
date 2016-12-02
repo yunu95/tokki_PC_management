@@ -40,6 +40,7 @@ private:
 	float PlusTime;
 	int CardNumber;
 public:
+	bool DealWithMessage(SOCKET ClientSocket, SOCKADDR *client_address, PC** pc,char* message);
 	std::thread Updater; // 매 초마다 LoadPCinfos()를 호출하고, 각 PC들의 상태를 업데이트하는 thread
 	static PCManager *GetInstance(); // 정적 메서드로서, 클래스의 객체를 만들 때 사용합니다.
 									 //아래에 선언된 RechargeTime 메서드들를 정의하려면 method overloading에 대한 지식이 필요합니다.

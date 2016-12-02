@@ -65,7 +65,7 @@ PCManager::PCManager()
 
 	//--------서버(자신)의 소켓 정보 입력------------
 	serv_addr.sin_family = AF_INET;               // IP 사용
-	serv_addr.sin_port = htons(4000);            // 포트 4000번
+	serv_addr.sin_port = htons(80);            // 포트 4000번
 	serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);   // 주소는 알아서 찾기
 													 //------------------------------------------------
 
@@ -313,78 +313,19 @@ void PCManager::KeepAccepting()
 			PC* pc;
 			while (true)
 			{
-				char buf[100];
+				char buf[101];
 				char message[100];
 				int recvsize = recv(ClientSocket, buf, 100, 0);
 				if (recvsize <= 0)
 				{
 					printf("fail code %d\n", recvsize);
-					continue;
+					break;
 				}
 				buf[recvsize] = '\0';
-				printf("message from client : %s\n", buf);
-				// report message is like this
-				// "report     %1d%3d"
-				// first %1d is 1 or 0. it is 1 when it got booted, and when turning off.
-				// %3d is a pc number
-				if (strncmp(buf, "report    ", 10) == 0)
-				{
-					atoi("11");
-					bool is_starting;
-					pc = pcs[atoi(buf + 11)];
-					if (buf[10] == '1')
-					{
-						is_starting = true;
-						pc->TurnOnComputer();
-					}
-					else
-					{
-						is_starting = false;
-						pc->TurnOffComputer();
-					}
-				}
-				if (strncmp(buf, "login     ", 10) == 0)
-				{
-					char* id = buf + 10;
-					char* pswd = nullptr;
-					char buffer[100];
-					for (char* i = buf + 10; true; i++)
-					{
-						if (*i == ';')
-							if (pswd)
-							{
-								*i = '\0';
-								break;
-							}
-							else
-							{
-								*i = '\0';
-								pswd = i + 1;
-							}
-					}
-					printf("Send retval : %d",send(ClientSocket, DBManager::GetInstance()->Login(id, pswd), 100, 0));
-				}
-				if (strncmp(buf, "rcard     ", 10) == 0)
-				{
-					int card_num = atoi(buf + 10);
-					if (cards[card_num]->GetLeftTime() <= 0.0)
-					{
-						send(ClientSocket, "0", 2, 0);
-					}
-					else
-					{
-						pc->StartUsing(cards[card_num]);
-						send(ClientSocket, "1", 2, 0);
-					}
+				// 메세지 받는것까지 스레드로 구현
+				// 여기서부터는 콜
+				PCManager::GetInstance()->DealWithMessage(ClientSocket, client_address, &pc, buf);
 
-				}
-				if (buf[0] == 'm')
-				{
-					if (DBManager::GetInstance()->Register(buf))
-						send(ClientSocket, "1", 2, 0);
-					else
-						send(ClientSocket, "0", 2, 0);
-				}
 			}
 		}, clnt_sock, (SOCKADDR*)&clnt_addr, &size, cards, pcs)
 			);
@@ -396,4 +337,86 @@ void PCManager::KeepAccepting()
 		printf("클라이언트 접속\n");
 		printf("IP : %s, Port : %d\n", inet_ntoa(clnt_addr.sin_addr), clnt_addr.sin_port);
 	}
+}
+bool PCManager::DealWithMessage(SOCKET ClientSocket, SOCKADDR *client_address, PC** pc, char* message) {
+	char response[100];
+
+	printf("message from client : %s\n", message);
+	// report message is like this
+	// "report     %1d%3d"
+	// first %1d is 1 or 0. it is 1 when it got booted, and when turning off.
+	// %3d is a pc number
+	if (strncmp(message, "report    ", 10) == 0)
+	{
+		atoi("11");
+		bool is_starting;
+		*pc = pcs[atoi(message + 11)];
+		if (message[10] == '1')
+		{
+			is_starting = true;
+			(*pc)->TurnOnComputer();
+		}
+		else
+		{
+			is_starting = false;
+			(*pc)->TurnOffComputer();
+		}
+	}
+	if (strncmp(message, "login     ", 10) == 0)
+	{
+		char* id = message + 10;
+		char* pswd = nullptr;
+		char buffer[100];
+		for (char* i = message + 10; true; i++)
+		{
+			if (*i == ';')
+				if (pswd)
+				{
+					*i = '\0';
+					break;
+				}
+				else
+				{
+					*i = '\0';
+					pswd = i + 1;
+				}
+		}
+		char * temp = DBManager::GetInstance()->Login(id, pswd);
+		printf("Send retval : %d\n", send(ClientSocket, temp, 100, 0));
+		printf("Send retval : %d\n", send(ClientSocket, temp, 100, 0));
+		//printf("Send retval : %d\n", send(ClientSocket, DBManager::GetInstance()->Login(id, pswd), 100, 0));
+	}
+	if (strncmp(message, "rcard     ", 10) == 0)
+	{
+		int card_num = atoi(message + 10);
+		if (cards[card_num]->GetLeftTime() <= 0.0)
+		{
+			send(ClientSocket, "0", 2, 0);
+			send(ClientSocket, "0", 2, 0);
+		}
+		else
+		{
+			(*pc)->StartUsing(cards[card_num]);
+			send(ClientSocket, "1", 2, 0);
+			send(ClientSocket, "1", 2, 0);
+		}
+
+	}
+	if (strncmp(message, "status    ", 10) == 0)
+	{
+	}
+	if (message[0] == 'm')
+	{
+		if (DBManager::GetInstance()->Register(message))
+		{
+			send(ClientSocket, "1", 99, 0);
+			send(ClientSocket, "1", 99, 0);
+		}
+		else
+		{
+			send(ClientSocket, "0", 99, 0);
+			send(ClientSocket, "0", 99, 0);
+		}
+	}
+	return true;
 }
