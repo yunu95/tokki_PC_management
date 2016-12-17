@@ -19,7 +19,7 @@ void Card::AbortUsing(const PC& target) {
 void Card::SetLeftTime(const float& time) {
 	this->left_time = time;
 }
-// Q. this->left_time = time; µÑ Áß ¾î´À °ÍÀÌ ¿øÇÏ´Â °ÍÀÎ°¡?
+// Q. this->left_time = time; ë‘˜ ì¤‘ ì–´ëŠ ê²ƒì´ ì›í•˜ëŠ” ê²ƒì¸ê°€?
 
 int Card::GetCardNo()
 {
