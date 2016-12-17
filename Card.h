@@ -1,21 +1,21 @@
 #pragma once
 #include "User.h"
 #include <string>
-// CardëŠ” ë°ì´í„°ë² ì´ìŠ¤ì™€ ì—°ë™ë  í•„ìš”ê°€ ì—†ìŠµë‹ˆë‹¤.
+// Card´Â µ¥ÀÌÅÍº£ÀÌ½º¿Í ¿¬µ¿µÉ ÇÊ¿ä°¡ ¾ø½À´Ï´Ù.
 class Card :
 	public User
 {
 private:
-	// ì¹´ë“œì˜ ì¼ë ¨ë²ˆí˜¸ë¡œ, ë‹¤ë¥¸ ì¹´ë“œì™€ ì¤‘ì²©ë  ìˆ˜ ì—†ëŠ” í‚¤ ê°’ ì—­í• ì„ í•©ë‹ˆë‹¤.
+	// Ä«µåÀÇ ÀÏ·Ã¹øÈ£·Î, ´Ù¸¥ Ä«µå¿Í ÁßÃ¸µÉ ¼ö ¾ø´Â Å° °ª ¿ªÇÒÀ» ÇÕ´Ï´Ù.
 	int card_number;
-	// ë¹„íšŒì› ì‚¬ìš©ìì˜ ë‚¨ì€ ì‹œê°„ì„ í‘œì‹œí•©ë‹ˆë‹¤.
+	// ºñÈ¸¿ø »ç¿ëÀÚÀÇ ³²Àº ½Ã°£À» Ç¥½ÃÇÕ´Ï´Ù.
 	float left_time;
 public: 
-	// ìƒì„±ì - ë©¤ë²„ë³€ìˆ˜ë¥¼ ì´ˆê¸°í™” í•©ë‹ˆë‹¤.
+	// »ı¼ºÀÚ - ¸â¹öº¯¼ö¸¦ ÃÊ±âÈ­ ÇÕ´Ï´Ù.
 	Card(const int& _card_number, const float& _left_time = 0.0f);
 	// lefttime = 0.0f this means default value of second parameter is 0.0f.
 	// you don't have to call constructor specifying both parameters. you only need to specify card_number.
-	~Card(); // ì†Œë©¸ì
+	~Card(); // ¼Ò¸êÀÚ
 
 	// both declararitions below are overriding User's methods.
 	void AbortUsing(const PC& target);

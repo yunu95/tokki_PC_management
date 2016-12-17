@@ -1,14 +1,14 @@
 #pragma once
 #include <vector>
-#include <thread> // ìŠ¤ë ˆë“œëŠ” í•œê°œë§Œ ë§Œë“¤ë©´ ë¨.
+#include <thread> // ½º·¹µå´Â ÇÑ°³¸¸ ¸¸µé¸é µÊ.
 #include <stdio.h>
 #include <WinSock2.h>
 #include <process.h>
 /*
-ëª¨ë“  PC ê°ì²´ë“¤ì˜ ì¸ìŠ¤í„´ìŠ¤ë“¤ì„ í¬í•¨í•˜ê³  ìˆë‹¤. PCë°©ì˜ ì¹´ìš´í„° PCì— í•´ë‹¹ë˜ëŠ” ê°ì²´ì´ë‹¤. - ì‹±ê¸€í†¤ íŒ¨í„´ ì ìš©.
+¸ğµç PC °´Ã¼µéÀÇ ÀÎ½ºÅÏ½ºµéÀ» Æ÷ÇÔÇÏ°í ÀÖ´Ù. PC¹æÀÇ Ä«¿îÅÍ PC¿¡ ÇØ´çµÇ´Â °´Ã¼ÀÌ´Ù. - ½Ì±ÛÅæ ÆĞÅÏ Àû¿ë.
 */
 
-// ì•„ë˜ì˜ í´ë˜ìŠ¤ ì„ ì–¸ì€ í´ë˜ìŠ¤ ì „ë°©ì„ ì–¸ì…ë‹ˆë‹¤.
+// ¾Æ·¡ÀÇ Å¬·¡½º ¼±¾ğÀº Å¬·¡½º Àü¹æ¼±¾ğÀÔ´Ï´Ù.
 class Card;
 class Member;
 class PC;
@@ -21,35 +21,35 @@ private:
 	// It waits for the message from pc clients.
 	void KeepAccepting();
 
-	// ì‹±ê¸€í†¤ íŒ¨í„´ì´ê¸° ë•Œë¬¸ì—, í´ë˜ìŠ¤ ì™¸ë¶€ì—ì„œ í•¨ë¶€ë¡œ ê°ì²´ë¥¼ ë§Œë“¤ë©´ ì•ˆ ë©ë‹ˆë‹¤. ë”°ë¼ì„œ ìƒì„±ìëŠ” privateë¡œ ì„ ì–¸ë©ë‹ˆë‹¤. 
-	static PCManager* instance; // ì´ í´ë˜ìŠ¤ì˜ ìœ ì¼í•œ ê°ì²´ë¥¼ ê°€ë¦¬í‚¤ëŠ” í¬ì¸í„°ì…ë‹ˆë‹¤.
+	// ½Ì±ÛÅæ ÆĞÅÏÀÌ±â ¶§¹®¿¡, Å¬·¡½º ¿ÜºÎ¿¡¼­ ÇÔºÎ·Î °´Ã¼¸¦ ¸¸µé¸é ¾È µË´Ï´Ù. µû¶ó¼­ »ı¼ºÀÚ´Â private·Î ¼±¾ğµË´Ï´Ù. 
+	static PCManager* instance; // ÀÌ Å¬·¡½ºÀÇ À¯ÀÏÇÑ °´Ã¼¸¦ °¡¸®Å°´Â Æ÷ÀÎÅÍÀÔ´Ï´Ù.
 	std::vector<std::string> commandsList;
-	// ëª¨ë“  pcë“¤ì˜ ì¸ìŠ¤í„´ìŠ¤ë“¤ì€ pcsì— ë“¤ì–´ìˆìŠµë‹ˆë‹¤.
+	// ¸ğµç pcµéÀÇ ÀÎ½ºÅÏ½ºµéÀº pcs¿¡ µé¾îÀÖ½À´Ï´Ù.
 	std::vector<class PC*> pcs;
 
 	WSADATA wsaData;
 	SOCKET serv_sock;
-	SOCKADDR_IN serv_addr = { 0 };               // ì´ˆê¸°í™”
+	SOCKADDR_IN serv_addr = { 0 };               // ÃÊ±âÈ­
 	std::vector<SOCKET> clnt_socks;
-	//pcë“¤ì˜ í˜„ ìƒíƒœë¥¼ ë§¤ ì´ˆë§ˆë‹¤ ì‹œê°„ì— ë§ê²Œ ì—…ë°ì´íŠ¸ ì‹œì¼œì£¼ëŠ” ìŠ¤ë ˆë“œì…ë‹ˆë‹¤.
+	//pcµéÀÇ Çö »óÅÂ¸¦ ¸Å ÃÊ¸¶´Ù ½Ã°£¿¡ ¸Â°Ô ¾÷µ¥ÀÌÆ® ½ÃÄÑÁÖ´Â ½º·¹µåÀÔ´Ï´Ù.
 	std::thread pcs_updater_thread;
-	// accept ìŠ¤ë ˆë“œëŠ” pcê°€ ë§¤ë‹ˆì €ì— ì ‘ì†í•˜ëŠ” ê²ƒì„ ëŒ€ê¸°í•˜ë©´ì„œ, pcê°€ ì ‘ì†í•˜ë©´ ì—°ê²°ì„ ë§Œë“¤ì–´ì£¼ëŠ” ìŠ¤ë ˆë“œ
+	// accept ½º·¹µå´Â pc°¡ ¸Å´ÏÀú¿¡ Á¢¼ÓÇÏ´Â °ÍÀ» ´ë±âÇÏ¸é¼­, pc°¡ Á¢¼ÓÇÏ¸é ¿¬°áÀ» ¸¸µé¾îÁÖ´Â ½º·¹µå
 	std::thread accept_thread;
-	// ReceiveThreadsì— ë“¤ì–´ê°„ ìŠ¤ë ˆë“œë“¤ì€ í•œë²ˆ pcì™€ ì—°ê²°ì´ ë˜ë©´ ê·¸ pcë“¤ë¡œë¶€í„° ì–´ë–¤ ì—°ë½ì´ ì˜¬ì§€ ê³„ì† ëŒ€ê¸°í•˜ëŠ” ìŠ¤ë ˆë“œ
+	// ReceiveThreads¿¡ µé¾î°£ ½º·¹µåµéÀº ÇÑ¹ø pc¿Í ¿¬°áÀÌ µÇ¸é ±× pcµé·ÎºÎÅÍ ¾î¶² ¿¬¶ôÀÌ ¿ÃÁö °è¼Ó ´ë±âÇÏ´Â ½º·¹µå
 	std::vector<std::thread> RecieveThreads;
 	float PlusTime;
 
 public:
 	bool DealWithMessage(SOCKET ClientSocket, SOCKADDR *client_address, PC** pc, char* message);
-	static PCManager *GetInstance(); // ì •ì  ë©”ì„œë“œë¡œì„œ, í´ë˜ìŠ¤ì˜ ê°ì²´ë¥¼ ë§Œë“¤ ë•Œ ì‚¬ìš©í•©ë‹ˆë‹¤.
-									 //ì•„ë˜ì— ì„ ì–¸ëœ RechargeTime ë©”ì„œë“œë“¤ë¥¼ ì •ì˜í•˜ë ¤ë©´ method overloadingì— ëŒ€í•œ ì§€ì‹ì´ í•„ìš”í•©ë‹ˆë‹¤.
+	static PCManager *GetInstance(); // Á¤Àû ¸Ş¼­µå·Î¼­, Å¬·¡½ºÀÇ °´Ã¼¸¦ ¸¸µé ¶§ »ç¿ëÇÕ´Ï´Ù.
+									 //¾Æ·¡¿¡ ¼±¾ğµÈ RechargeTime ¸Ş¼­µåµé¸¦ Á¤ÀÇÇÏ·Á¸é method overloading¿¡ ´ëÇÑ Áö½ÄÀÌ ÇÊ¿äÇÕ´Ï´Ù.
 
-									 // ë¡œê·¸ì¸í•˜ëŠ” íšŒì›ì´ìš©ìì˜ ì‚¬ìš©ì‹œê°„ì„ ì¶”ê°€í•©ë‹ˆë‹¤.
+									 // ·Î±×ÀÎÇÏ´Â È¸¿øÀÌ¿ëÀÚÀÇ »ç¿ë½Ã°£À» Ãß°¡ÇÕ´Ï´Ù.
 	void RechargeTime(const Member& target, const float& seconds);
 	// it initiates every initialization and activate terminal  
 	void Initialize();
-	bool QueryNextAction(); // ì‚¬ìš©ìì—ê²Œ ëª…ë ¹ì–´ë¥¼ ìš”êµ¬í•˜ê³ , ì…ë ¥ëœ ëª…ë ¹ì–´ì— ëŒ€ì‘í•˜ëŠ” ë©”ì„œë“œë¥¼ ì‹¤í–‰í•©ë‹ˆë‹¤.
-	void LoadPCinfos(); // PCë°©ì— ìˆëŠ” PCë“¤ì˜ ì •ë³´ë¥¼ íŒŒì¼ì—ì„œ ì½ì–´ ì˜µë‹ˆë‹¤.
+	bool QueryNextAction(); // »ç¿ëÀÚ¿¡°Ô ¸í·É¾î¸¦ ¿ä±¸ÇÏ°í, ÀÔ·ÂµÈ ¸í·É¾î¿¡ ´ëÀÀÇÏ´Â ¸Ş¼­µå¸¦ ½ÇÇàÇÕ´Ï´Ù.
+	void LoadPCinfos(); // PC¹æ¿¡ ÀÖ´Â PCµéÀÇ Á¤º¸¸¦ ÆÄÀÏ¿¡¼­ ÀĞ¾î ¿É´Ï´Ù.
 
 	std::string Timespan(char* now, char* end);
 };
