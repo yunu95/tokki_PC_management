@@ -1,9 +1,10 @@
 #include "Member.h"
 
 
-Member::Member(std::string id)
+Member::Member(std::string id, std::string nowtime)
 {
-	this->id = id;
+	this->id = id;//아이디
+	this->nowtime = nowtime;//시작한시간
 }
 
 
@@ -17,16 +18,21 @@ void Member::AbortUsing(const PC& target)
 
 }
 
-void Member::SetLeftTime(const float& time) {
-	this->left_time = time;
+void Member::SetLeftTime(const int& time) {
+	this->left_time = time;//남은시간
 }
 
 std::string Member::GetIdentifier()
 {
-	return std::string("Member id : ") + id;
+	return id;
 }
 
-float Member::GetLeftTime()
+int Member::GetLeftTime()
 {
 	return left_time;
+}
+
+char* Member::GetNowTime()
+{
+	return (char*)nowtime.c_str();
 }

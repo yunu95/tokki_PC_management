@@ -4,7 +4,6 @@
 #include <vector>
 #include "PCManager.h"
 #include "PCManager.h"
-#include "Card.h"
 #include "Member.h" 
 #include "PC.h"
 #include "DBManager.h"
@@ -32,23 +31,18 @@ PCManager* PCManager::GetInstance() {
 // initiates all the commands needed in terminal.
 PCManager::PCManager()
 {
-	commandsList.push_back(std::string("RechargeCard"));
-	commandsList.push_back(std::string("RechargeMember"));
-	commandsList.push_back(std::string("Checkout"));
-	commandsList.push_back(std::string("Status"));
-	commandsList.push_back(std::string("Quit"));
+	commandsList.push_back(std::string("RechargeMember(rm)"));
+	commandsList.push_back(std::string("Checkout(c)"));
+	commandsList.push_back(std::string("Status(s)"));
+	commandsList.push_back(std::string("Quit(q)"));
 
-	// 카드 객체를 미리 생성해 cards 벡터 안에 집어넣습니다. 카드의 번호는 1부터 순서대로 생성됩니다.	
-
-	for (int i = 0; i < 100; i++)
-		cards.push_back(new Card(i, 0));
 
 	// PC 객체는 이미 생성된 상태겠지요. 100개가 있다고 가정하고 벡터 안에 집어넣습니다.
 	for (int i = 0; i < 100; i++)
 		pcs.push_back(new PC(i));
 
 	//손님이 멤버인 경우는 데이터 베이스에서 불러오게 됩니다.
-	   //-------소켓 라이브러리 불러오기(?)--------
+	//-------소켓 라이브러리 불러오기(?)--------
 	int retval = WSAStartup(MAKEWORD(2, 2), &wsaData);
 	if (retval != 0)
 	{
@@ -84,8 +78,6 @@ PCManager::PCManager()
 	int size = sizeof(SOCKADDR_IN);
 
 	accept_thread = std::thread(&PCManager::KeepAccepting, this);
-	Updater = std::thread(&PCManager::update_pcs, this);
-
 }
 // 여기는 프로그램이 실행되는 공간이 아님. 단지 필드일 뿐
 
@@ -122,25 +114,8 @@ bool PCManager::QueryNextAction() {
 			*EachChar = tolower(*EachChar);
 
 		// 커맨드에 따라 필요한 함수를 호출한다.
-		if (command == "rechargecard")
-		{
 
-			cout << "카드의 일련번호와 추가할 시간을 입력하세요. " << endl;
-			cin >> CardNumber >> PlusTime;
-
-			cout << "현재" << cards[CardNumber]->GetCardNo() << "번 카드는"
-				<< cards[CardNumber]->GetLeftTime() << "초인 상태입니다." << endl;
-			RechargeTime(*cards[CardNumber], PlusTime);
-
-			CardNumber = NULL;
-			PlusTime = 0.0;
-
-			cin.clear();
-			cin.ignore(INT_MAX, '\n');
-
-			return true;
-		}
-		if (command == "rechargemember") {
+		if (command == "rm") {
 			//RechargeTime(const Member& target, const float& seconds)
 			char id[100];
 			char time[100];
@@ -159,23 +134,8 @@ bool PCManager::QueryNextAction() {
 				return false;
 			}
 		}
-		if (command == "checkout")
-		{
-			// checkout - Do initialize information this card.
-			cout << "카드의 일련번호를 입력하세요. " << endl;
-			cin >> CardNumber;
-			CheckoutCard(*cards[CardNumber]);
-			cout << cards[CardNumber]->GetCardNo() << "번 카드가 "
-				<< cards[CardNumber]->GetLeftTime() << "초로 초기화 되었습니다." << endl;
 
-			CardNumber = NULL;
-
-			cin.clear();
-			cin.ignore(INT_MAX, '\n');
-
-			return true;
-		}
-		if (command == "status")
+		if (command == "s")
 		{
 			//PC 상태확인은 현재 PC방의 pc들 중 몇 대가 켜져 있고 몇대가 꺼져 있는지, -  is_power_on
 			//또 몇 대가 사용중인지 pc방의 상태를 보여준다. - is_active
@@ -207,7 +167,7 @@ bool PCManager::QueryNextAction() {
 
 			return true;
 		}
-		if (command == "quit") {
+		if (command == "q") {
 			return false;
 		}
 	}
@@ -219,16 +179,6 @@ void PCManager::Initialize() {
 	while (QueryNextAction());
 }
 
-void PCManager::RechargeTime(Card& target, const float& seconds)
-{
-
-	// 손놈 : 카드 번호랑 시간 줄테니까 더해와
-	target.PlusLeftTime(seconds);
-	// 직원 : 네 카드번호가 target번이니까 잠시만요 , cards벡터에서 target번째를 꺼내고
-	std::cout << target.GetCardNo() << "번 카드에"
-		<< seconds << "초가 추가 되었습니다." << std::endl;
-	// 거기에 있는 left_time에 seconds를 더해서 갱신할게요.
-}
 
 void PCManager::RechargeTime(const Member& target, const float& seconds)
 {
@@ -255,10 +205,6 @@ void PCManager::LoadPCinfos()
 	inputFile.close();
 }
 
-void PCManager::CheckoutCard(Card& card)
-{
-	card.SetLeftTime(0);
-}
 
 void PCManager::KeepAccepting()
 {
@@ -270,12 +216,12 @@ void PCManager::KeepAccepting()
 		clnt_sock = accept(serv_sock, (SOCKADDR*)&clnt_addr, &size);
 		clnt_socks.push_back(clnt_sock);
 		RecieveThreads.push_back(
-			std::thread([](SOCKET ClientSocket, SOCKADDR *client_address, int* SIZE, std::vector<Card*>& cards, std::vector<PC*>& pcs)
+			std::thread([](SOCKET ClientSocket, SOCKADDR *client_address, int* SIZE, std::vector<PC*>& pcs)
 		{
 			PC* pc;
 			while (true)
 			{
-				char buf[BUF_SIZE+1];
+				char buf[BUF_SIZE + 1];
 				char message[100];
 				int recvsize = recv(ClientSocket, buf, BUF_SIZE, 0);
 				if (recvsize <= 0)
@@ -288,33 +234,23 @@ void PCManager::KeepAccepting()
 				// 여기서부터는 콜
 				PCManager::GetInstance()->DealWithMessage(ClientSocket, client_address, &pc, buf);
 
+
 			}
-		}, clnt_sock, (SOCKADDR*)&clnt_addr, &size, cards, pcs)
-			);
+		}, clnt_sock, (SOCKADDR*)&clnt_addr, &size, pcs)
+		);
 		if (clnt_sock == SOCKET_ERROR)
 		{
 			printf("accept() Error\n");
+			exit(0);
 		}
 		//----------------------------------------------------------------------
 		printf("클라이언트 접속\n");
 		printf("IP : %s, Port : %d\n", inet_ntoa(clnt_addr.sin_addr), clnt_addr.sin_port);
 	}
 }
-void PCManager::update_pcs()
-{
-	while (true)
-	{
-		for (PC* each : pcs)
-		{
-			if (each->Getactive_Status())
-			{
-				each->GetUser()->SetLeftTime(each->GetUser()->GetLeftTime() - 1);
-			}
-		}
-		Sleep(1000);
-	}
-}
-bool PCManager::DealWithMessage(SOCKET ClientSocket, SOCKADDR *client_address, PC** pc, char* message) {
+
+bool PCManager::DealWithMessage(SOCKET ClientSocket, SOCKADDR *client_address, PC** pc, char* message)
+{//***서버와 메세지를 주고받는부분
 	char response[100];
 
 	printf("message from client : %s\n", message);
@@ -324,7 +260,7 @@ bool PCManager::DealWithMessage(SOCKET ClientSocket, SOCKADDR *client_address, P
 	// %3d is a pc number
 	if (strncmp(message, "report    ", 10) == 0)
 	{
-		atoi("11");
+
 		bool is_starting;
 		*pc = pcs[atoi(message + 11)];
 		if (message[10] == '1')
@@ -338,8 +274,8 @@ bool PCManager::DealWithMessage(SOCKET ClientSocket, SOCKADDR *client_address, P
 			(*pc)->TurnOffComputer();
 		}
 	}
-	if (strncmp(message, "login     ", 10) == 0)
-	{
+	else if (strncmp(message, "login     ", 10) == 0)
+	{//***로그인
 		char* id = message + 10;
 		char* pswd = nullptr;
 		for (char* i = message + 10; true; i++)
@@ -356,51 +292,199 @@ bool PCManager::DealWithMessage(SOCKET ClientSocket, SOCKADDR *client_address, P
 					pswd = i + 1;
 				}
 		}
-		float leftsecs;
+		int leftsecs;
 		char * temp = DBManager::GetInstance()->Login(id, pswd, &leftsecs);
-		if (temp[0] != '0')
-		{
-			(*pc)->StartUsing(new Member(id));
-			(*pc)->GetUser()->SetLeftTime(leftsecs);
-		}
-		printf("Send retval : %d\n", send(ClientSocket, temp, 100, 0));
-		printf("Send retval : %d\n", send(ClientSocket, temp, 100, 0));
-		//printf("Send retval : %d\n", send(ClientSocket, DBManager::GetInstance()->Login(id, pswd), 100, 0));
-	}
-	if (strncmp(message, "rcard     ", 10) == 0)
-	{
-		int card_num = atoi(message + 10);
-		if (cards[card_num]->GetLeftTime() <= 0.0)
-		{
-			send(ClientSocket, "0", 2, 0);
-			send(ClientSocket, "0", 2, 0);
+		if (strcmp(temp, "false") != 0)
+		{//***로그인성공
+			time_t curtime;
+			struct tm *curtm;//***현재시간을 담을 시간구조체
+			curtime = time(NULL);
+			curtm = localtime(&curtime);//***그 지역의 현재 시간을 구조체에 담음
+
+										//***현재시간을 시와 분으로 맞춤 (시간:분)
+			std::string nowtime = std::to_string(curtm->tm_hour) + ":" + std::to_string(curtm->tm_min);
+
+			(*pc)->StartUsing(new Member(id, nowtime));
+			(*pc)->GetUser()->SetLeftTime(leftsecs);//***유저의 남은 시간을 유저객체에 넣음
+
+			printf("Send retval : %d\n", send(ClientSocket, temp, 100, 0));
+			printf("Send retval : %d\n", send(ClientSocket, temp, 100, 0));
 		}
 		else
-		{
-			(*pc)->StartUsing(cards[card_num]);
-			send(ClientSocket, "1", 2, 0);
-			send(ClientSocket, "1", 2, 0);
+		{//***로그인 실패
+
+			send(ClientSocket, temp, 20, 0);
+			send(ClientSocket, temp, 20, 0);
+
 		}
 
 	}
-	if (strncmp(message, "status    ", 10) == 0)
-	{
-		snprintf(response, 100, "%s|%d", (*pc)->GetUser()->GetIdentifier().c_str(), (*pc)->GetUser()->GetLeftTime());
+	else if (message[0] == 'o')
+	{//***음식주문
+		strtok(message, "|");
+		char*order = strtok(NULL, "|");//***주문한 음식의 번호
+		char*number = strtok(NULL, "|");//***자리번호
+		char name[30];
+		switch (atoi(order))
+		{
+		case 1:
+			strcpy(name, "내가 토끼라면");
+			break;
+		case 2:
+			strcpy(name, "토끼간 순대");
+			break;
+		case 3:
+			strcpy(name, "산토끼 정식");
+			break;
+		case 4:
+			strcpy(name, "콜-라");
+			break;
+		case 5:
+			strcpy(name, "토끼 불고기버거");
+			break;
+		case 6:
+			strcpy(name, "비타민워터");
+			break;
+		case 7:
+			strcpy(name, "토끼덮밥");
+			break;
+		}
+		std::cout << number << "번 님이 " << name << "을 주문하셨습니다." << std::endl;
+
+	}
+	else if (strncmp(message, "cs", 2) == 0)
+	{//***상태 표시
+		strtok(message, "|");
+		char*t = strtok(NULL, "|");//***현재시간(상태표시기능을 눌렀을때의 시간)
+
+		char nowtime[6] = { '\0' };
+		strcpy(nowtime, (*pc)->GetUser()->GetNowTime());//***유저가 컴퓨터를 켰을때의 시간을 가져옴
+
+		char lt[20];//***남은시간 담는 변수
+					//***유저의 남은 시간을 디비에서 가져옴
+		strcpy(lt, DBManager::GetInstance()->ShowTime((char*)((*pc)->GetUser()->GetIdentifier().c_str())));
+
+		int left = atoi(strtok(lt, ":")) * 60 + atoi(strtok(NULL, ":"));//***남은시간을 분으로 환산
+
+		(*pc)->GetUser()->SetLeftTime(left);//***유저의 남은시간에 삽입
+
+		std::string dt = Timespan(nowtime, t);//***지금까지사용한시간(Timespan 함수 : 현재시간-처음시작한시간)
+		char *Dt = (char*)dt.c_str();
+		int usingtime = atoi(strtok(Dt, ":")) * 60 + atoi(strtok(NULL, ":"));//***지금까지 사용한시간을 분으로 환산
+
+																			 //***유저이름|남은시간-지금까지사용한시간 을 pc클라이언트에 보냄
+		if ((*pc)->GetUser()->GetLeftTime() - usingtime >= 0)//***양수면 값 그대로보내고
+			snprintf(response, 100, "%s|%d", (*pc)->GetUser()->GetIdentifier().c_str(), (*pc)->GetUser()->GetLeftTime() - usingtime);
+		else//***음수면 0을 보냄
+			snprintf(response, 100, "%s|%d", (*pc)->GetUser()->GetIdentifier().c_str(), 0);
+
 		send(ClientSocket, response, 100, 0);
 		send(ClientSocket, response, 100, 0);
 	}
-	if (message[0] == 'm')
-	{
+	else if (message[0] == 'm')
+	{//***회원가입
 		if (DBManager::GetInstance()->Register(message))
-		{
+		{//***성공
 			send(ClientSocket, "1", 99, 0);
 			send(ClientSocket, "1", 99, 0);
 		}
 		else
-		{
-			send(ClientSocket, "0", 99, 0);
-			send(ClientSocket, "0", 99, 0);
+		{//***실패
+			send(ClientSocket, "000", 99, 0);
+			send(ClientSocket, "000", 99, 0);
 		}
 	}
+	else if (message[0] == 'l'&&message[1] == 'p')
+	{//***유저의 남은시간표시
+		strtok(message, "|");
+		char*id = strtok(NULL, "|");//***아이디
+		char left[10];
+		char time[10];
+		strcpy(left, DBManager::GetInstance()->ShowTime(id));//***남은시간을 left에 담음
+		int l = atoi(strtok(left, ":")) * 60 + atoi(strtok(NULL, ":"));//***남은시간을 분으로 환산
+		sprintf(time, "%d", l);//***남은시간을 char*형으로 형변환
+		send(ClientSocket, time, 10, 0);
+		send(ClientSocket, time, 10, 0);
+
+	}
+	else if (message[0] == 's')
+	{//***종료
+		strtok(message, "|");
+		char*t = strtok(NULL, "|");
+
+		char a[6] = { '\0' };
+		strcpy(a, (*pc)->GetUser()->GetNowTime());//***처음시작한시간
+
+		std::string dt = Timespan(a, t);//***지금까지사용한시간
+		char *Dt = (char*)dt.c_str();
+		int usingtime = atoi(strtok(Dt, ":")) * 60 + atoi(strtok(NULL, ":"));//***지금까지 사용한시간 분으로 환산
+
+		DBManager::GetInstance()->Shutdown((char*)((*pc)->GetUser()->GetIdentifier().c_str()), usingtime);//***종료처리
+		return false;
+	}
+	else if (message[0] == 'c')
+	{//***비밀번호바꾸기
+
+		if (DBManager::GetInstance()->ChangePassword(message))
+		{//***성공
+			send(ClientSocket, "1", 99, 0);
+			send(ClientSocket, "1", 99, 0);
+		}
+		else
+		{//***실패
+			send(ClientSocket, "000", 99, 0);
+			send(ClientSocket, "000", 99, 0);
+		}
+	}
+	else if (message[0] == 'f'&&message[1] == 'a')
+	{//***비밀번호확인질문
+		char question[100];
+		char tt[100];
+		strcpy(question, DBManager::GetInstance()->Question(message));//확인질문
+		sprintf(tt, "%s%s", "****", question);
+		send(ClientSocket, " ", 100, 0);
+		send(ClientSocket, tt, 100, 0);
+	}
+	else if (message[0] == 'f'&&message[1] == 'r')
+	{//***비밀번호확인질문 정답확인
+		if (DBManager::GetInstance()->Answer(message))
+		{//***맞
+			send(ClientSocket, "1", 99, 0);
+			send(ClientSocket, "1", 99, 0);
+		}
+		else
+		{//***틀
+			send(ClientSocket, "000", 99, 0);
+			send(ClientSocket, "000", 99, 0);
+		}
+
+	}
 	return true;
+}
+std::string PCManager::Timespan(char*now, char*end)
+{//***시간빼기! 뒤에오는 인자가 무조건 커야한다.
+
+ //---FORMAT---
+ //now=hour:min
+ //end=hour:min
+
+	int nh = atoi(strtok(now, ":"));
+	int nm = atoi(strtok(NULL, ":"));
+	int eh = atoi(strtok(end, ":"));
+	int em = atoi(strtok(NULL, ":"));
+
+	int h, m;
+	if (em < nm)
+	{
+		m = em + 60 - nm;
+		h = eh - 1 - nh;
+	}
+	else
+	{
+		m = em - nm;
+		h = eh - nh;
+	}
+	std::string span = std::to_string(h) + ":" + std::to_string(m);
+
+	return span;
 }

@@ -39,14 +39,17 @@ public:
 	bool Recharge(char* id, char* time);
 	//what register method needs | (name) | (age) | (phonenum) | (id) | (password)
 	//	| (psw_question) | (psw_answer)
-
+	char* Question(char*id);
+	bool Answer(char*answer);
 	bool Register(char* name, char* age, char* phonenum, char* id, char* passwd, char* question, char* psw_answer);
 	bool Register(char* WholeMessage);
 	bool AddTime(char* id, int time);
 	bool Shutdown(char* id, int used_time);
+	bool ChangePassword(char*m);
+	char* ShowTime(char*id);
 	char* Login(char* wholeMessage);
 	char* Login(char* id, char* password);
-	char* DBManager::Login(char* id, char* password, float* left_time);
+	char* DBManager::Login(char* id, char* password, int* left_time);
 	// 싱글톤 객체의 유일한 인스턴스를 참조하기 위해 쓰이는 Getter메서드.
 	static DBManager* GetInstance();
 };

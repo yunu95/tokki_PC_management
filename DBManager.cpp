@@ -24,7 +24,7 @@ bool DBManager::Register(char * name, char * age, char * phonenum, char * id, ch
 	return buffer[0] != '0';
 }
 bool DBManager::Shutdown(char* id, int used_time)
-{
+{//***종료
 	char message[100];
 	char buffer[100];
 	sprintf(message, "s|%s|%d", id, used_time);
@@ -34,7 +34,7 @@ bool DBManager::Shutdown(char* id, int used_time)
 	return buffer[0] != '0';
 }
 bool DBManager::Register(char* WholeMessage)
-{
+{//***회원가입
 	char buffer[101];
 	int temp;
 	send(clientsock, WholeMessage, temp = strlen(WholeMessage) + 1, 0);
@@ -47,7 +47,7 @@ bool DBManager::Register(char* WholeMessage)
 	return buffer[0] != '0';
 }
 bool DBManager::AddTime(char * id, int time)
-{
+{//***시간추가
 	char message[100];
 	char buffer[100];
 	snprintf(message, 100, "r|%s|%s", id, time);
@@ -75,8 +75,8 @@ bool DBManager::AddTime(char * id, int time)
 }
 //format : l|(id-c)|(password-c)
 char* DBManager::Login(char* wholeMessage)
-{
-	static char buffer[100];
+{//***만든 메세지포맷을 서버로 보내는 함수(왜있는지모르겠음)
+	char buffer[100];
 	//printf("[client] : ");
 	//scanf("%s", say);
 	send(clientsock, wholeMessage, (int)strlen(wholeMessage) + 1, 0);//발신
@@ -84,32 +84,34 @@ char* DBManager::Login(char* wholeMessage)
 	return buffer;
 }
 char* DBManager::Login(char* id, char* password)
-{
+{//로그인을 메세지포맷대로 만드는 함수(왜있는지모르겠음)
 	char message[1024];
 	snprintf(message, 1024, "l|%s|%s", id, password);
 	return Login(message);
 }
-char* DBManager::Login(char* id, char* password, float* left_time)
-{
+char* DBManager::Login(char* id, char* password, int* left_time)
+{//로그인
 	char* ret_value = Login(id, password);
-	if (ret_value[0] == '0')
-		return ret_value;	char* minute;
+	if (strcmp(ret_value, "0") == 0)//로그인실패
+		return "false";
+	char* minute;
 	char* seconds;
 	minute = ret_value;
 	for (seconds = ret_value; *seconds != ':'; seconds++);
 	*seconds = '\0';
 	seconds++;
-	*left_time = ((float)atoi(minute))*60.0f + ((float)atoi(seconds));
+	*left_time = (atoi(minute)) * 60 + (atoi(seconds));
 	return ret_value;
 }
-DBManager* DBManager::GetInstance() {
+DBManager* DBManager::GetInstance()
+{//싱글톤~~~~~~
 	if (instance)
 		return instance;
 	else
 		return instance = new DBManager();
 }
 DBManager::DBManager()
-{
+{//디비와 소켓통신
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 	{
 		printf("초기화 실패\n");
@@ -132,8 +134,6 @@ DBManager::DBManager()
 		printf(" 서버 접속 실패 ");
 		exit(1);
 	}
-
-
 }
 
 
@@ -145,83 +145,59 @@ DBManager::~DBManager()
 }
 
 bool DBManager::Recharge(char * id, char * time)
-{
+{//충전
 	char message[100];
 	char buffer[100];
-	sprintf(message, "r|%s|%s", id, time);
+	sprintf(message, "r|%s|%s", id, time);//메세지포맷
 	send(clientsock, message, (int)strlen(message) + 1, 0);//발신
 	int strleng = recv(clientsock, buffer, 99, 0);//수신
-	return buffer[0] != '0';
-}
 
-//#include<WinSock2.h>
-//#include<cstdio>
-//#include<iostream>
-//#include<string>
-//#include<stdlib.h>
-///*포트와 ip주소를 미리 선언(고정)*/
-//#define PORT 8027
-//#define IP "210.94.181.91"
-//#define BUFSIZE 1024
-//using namespace std;
-//int main(int argc, char*argv[])
-//{
-//
-//	SOCKET clientsock;
-//	WSADATA wsa;
-//	struct sockaddr_in sockinfo;
-//	char message[BUFSIZE];
-//	int strleng;
-//
-//	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
-//	{
-//		printf("초기화 실패\n");
-//		exit(1);
-//	}
-//
-//	clientsock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-//
-//	if (clientsock == INVALID_SOCKET)
-//	{
-//		printf("소켓 생성 실패\n");
-//		exit(1);
-//	}
-//
-//	memset(&sockinfo, 0, sizeof(sockinfo));
-//
-//	sockinfo.sin_family = AF_INET;
-//	sockinfo.sin_port = htons(PORT);
-//	sockinfo.sin_addr.s_addr = inet_addr(IP);
-//	if (connect(clientsock, (SOCKADDR*)&sockinfo, sizeof(sockinfo)) == SOCKET_ERROR)
-//	{
-//		printf(" 서버 접속 실패 ");
-//		exit(1);
-//	}
-//	while (1)
-//	{
-//		char say[300] = { 0 };//서버에 보낼 값
-//		printf("[client] : ");
-//		scanf("%s", say);
-//		send(clientsock, say, (int)strlen(say), 0);//발신
-//		if (strcmp(say, "exit") == 0)
-//		{
-//			break;
-//		}
-//		/* message : 서버로부터 받아온 값
-//		strleng : 서버로부터 받아온 값의 길이 */
-//		strleng = recv(clientsock, message, sizeof(message) - 1, 0);//수신
-//
-//		if (strleng == -1)
-//		{
-//			printf(" 메세지 수신 실패 ");
-//			exit(1);
-//		}
-//		message[strleng] = '\0';
-//
-//
-//		printf(" [Server] : %s \n", message);
-//
-//	}
-//	closesocket(clientsock);
-//	WSACleanup();
-//}
+	if (strcmp(buffer, "0") == 0)
+		return false;//충전실패(아이디가 틀림)
+	else
+		return true;//충전성공
+}
+char* DBManager::ShowTime(char*id)
+{//시간보여주기
+	char message[100];
+	char bufer[100] = { "" };
+	sprintf(message, "lp|%s", id);
+	send(clientsock, message, (int)strlen(message) + 1, 0);//발신
+	int strleng = recv(clientsock, bufer, sizeof(bufer) - 1, 0);//수신
+	return bufer;
+}
+bool DBManager::ChangePassword(char*m)
+{//비밀번호바꾸기
+	char mess[1024] = { "" };
+	char bufer[100] = { "" };
+	strcpy(mess, m);
+	send(clientsock, mess, (int)strlen(mess) + 1, 0);//발신
+	int strleng = recv(clientsock, bufer, sizeof(bufer) - 1, 0);//수신
+	if (bufer[0] == '0')
+		return false;//아이디가 틀렸거나 비밀번호가틀렸거나
+	else
+		return true;//성공
+}
+char* DBManager::Question(char*m)
+{//비밀번호확인질문
+	char mess[20] = { "" };
+	char bufer[100] = { "" };
+	strcpy(mess, m);
+	send(clientsock, mess, (int)strlen(mess) + 1, 0);//발신
+	int strleng = recv(clientsock, bufer, sizeof(bufer) - 1, 0);//수신
+
+	return bufer;//질문
+}
+bool DBManager::Answer(char*m)
+{//비밀번호확인질문 정답
+	char mess[50] = { "" };
+	char bufer[100] = { "" };
+	strcpy(mess, m);
+	send(clientsock, mess, (int)strlen(mess) + 1, 0);//발신
+	int strleng = recv(clientsock, bufer, sizeof(bufer) - 1, 0);//수신
+
+	if (bufer[0] == '0')
+		return false;//틀림
+	else
+		return true;//맞음(비밀번호바뀜)
+}

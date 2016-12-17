@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include<ctime>
 // 인터페이스 입니다.
 class PC; // PC의 상태를 반영해야 하므로 PC 클래스를 넣습니다.
 class User
@@ -15,7 +16,8 @@ public:
 	// 사용시간이 만료되었을 때 target_pc에게 강제종료를 요청하는 메서드입니다.
 	virtual void AbortUsing(const PC& target_pc) = 0;
 	// 사용자의 남은 시간을 설정하는 메서드입니다.
-	virtual void SetLeftTime(const float& time) = 0;
+	virtual void SetLeftTime(const int& time) = 0;
 	virtual std::string GetIdentifier() = 0;
-	virtual float GetLeftTime() = 0;
+	virtual int GetLeftTime() = 0;
+	virtual char* GetNowTime() = 0;
 };
