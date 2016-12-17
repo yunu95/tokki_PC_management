@@ -9,63 +9,63 @@ bool DBManager::Register(char * name, char * age, char * phonenum, char * id, ch
 	snprintf(message, 100, "m|%s|%s|%s|%s|%s|%s|%s", name, age, phonenum, id, passwd, question, psw_answer);
 	//printf("[client] : ");
 	//scanf("%s", say);
-	send(clientsock, message, (int)strlen(message), 0);//¹ß½Å
+	send(clientsock, message, (int)strlen(message), 0);//ë°œì‹ 
 
-													   /* message : ¼­¹ö·ÎºÎÅÍ ¹Ş¾Æ¿Â °ª
-													   strleng : ¼­¹ö·ÎºÎÅÍ ¹Ş¾Æ¿Â °ªÀÇ ±æÀÌ */
+													   /* message : ì„œë²„ë¡œë¶€í„° ë°›ì•„ì˜¨ ê°’
+													   strleng : ì„œë²„ë¡œë¶€í„° ë°›ì•„ì˜¨ ê°’ì˜ ê¸¸ì´ */
 
-	int strleng = recv(clientsock, buffer, sizeof(message) - 1, 0);//¼ö½Å
+	int strleng = recv(clientsock, buffer, sizeof(message) - 1, 0);//ìˆ˜ì‹ 
 	if (strleng == -1)
 	{
-		printf(" ¸Ş¼¼Áö ¼ö½Å ½ÇÆĞ ");
+		printf(" ë©”ì„¸ì§€ ìˆ˜ì‹  ì‹¤íŒ¨ ");
 	}
 	buffer[strleng] = '\0';
 
 	return buffer[0] != '0';
 }
 bool DBManager::Shutdown(char* id, int used_time)
-{//***Á¾·á
+{//***ì¢…ë£Œ
 	char message[100];
 	char buffer[100];
 	sprintf(message, "s|%s|%d", id, used_time);
 	send(clientsock, message, strlen(message) + 1, 0);
 	// it receives 
-	int strleng = recv(clientsock, buffer, 100, 0);//¼ö½Å
+	int strleng = recv(clientsock, buffer, 100, 0);//ìˆ˜ì‹ 
 	return buffer[0] != '0';
 }
 bool DBManager::Register(char* WholeMessage)
-{//***È¸¿ø°¡ÀÔ
+{//***íšŒì›ê°€ì…
 	char buffer[101];
 	int temp;
 	send(clientsock, WholeMessage, temp = strlen(WholeMessage) + 1, 0);
 	// it receives 
-	int strleng = recv(clientsock, buffer, 100, 0);//¼ö½Å
+	int strleng = recv(clientsock, buffer, 100, 0);//ìˆ˜ì‹ 
 	if (strleng == -1)
 	{
-		printf(" ¸Ş¼¼Áö ¼ö½Å ½ÇÆĞ ");
+		printf(" ë©”ì„¸ì§€ ìˆ˜ì‹  ì‹¤íŒ¨ ");
 	}
 	return buffer[0] != '0';
 }
 bool DBManager::AddTime(char * id, int time)
-{//***½Ã°£Ãß°¡
+{//***ì‹œê°„ì¶”ê°€
 	char message[100];
 	char buffer[100];
 	snprintf(message, 100, "r|%s|%s", id, time);
 	//printf("[client] : ");
 	//scanf("%s", say);
-	send(clientsock, message, (int)strlen(message), 0);//¹ß½Å
+	send(clientsock, message, (int)strlen(message), 0);//ë°œì‹ 
 
-													   /* message : ¼­¹ö·ÎºÎÅÍ ¹Ş¾Æ¿Â °ª
-													   strleng : ¼­¹ö·ÎºÎÅÍ ¹Ş¾Æ¿Â °ªÀÇ ±æÀÌ */
+													   /* message : ì„œë²„ë¡œë¶€í„° ë°›ì•„ì˜¨ ê°’
+													   strleng : ì„œë²„ë¡œë¶€í„° ë°›ì•„ì˜¨ ê°’ì˜ ê¸¸ì´ */
 	while (true)
 	{
 		/*
-		¿©±â¿¡ ´äº¯Æ÷¸Ë´ë·Î ¿À´ÂÁö È®ÀÎÇÏ°í ¹Ş´Â°Í ³Ö±â
+		ì—¬ê¸°ì— ë‹µë³€í¬ë§·ëŒ€ë¡œ ì˜¤ëŠ”ì§€ í™•ì¸í•˜ê³  ë°›ëŠ”ê²ƒ ë„£ê¸°
 		*/
-		int strleng = recv(clientsock, buffer, sizeof(message) - 1, 0);//¼ö½Å
+		int strleng = recv(clientsock, buffer, sizeof(message) - 1, 0);//ìˆ˜ì‹ 
 		if (strleng == -1)
 		{
-			printf(" ¸Ş¼¼Áö ¼ö½Å ½ÇÆĞ ");
+			printf(" ë©”ì„¸ì§€ ìˆ˜ì‹  ì‹¤íŒ¨ ");
 		}
 		buffer[strleng] = '\0';
 		if (strncmp(buffer, "          ", 10) == 0)
@@ -75,24 +75,24 @@ bool DBManager::AddTime(char * id, int time)
 }
 //format : l|(id-c)|(password-c)
 char* DBManager::Login(char* wholeMessage)
-{//***¸¸µç ¸Ş¼¼ÁöÆ÷¸ËÀ» ¼­¹ö·Î º¸³»´Â ÇÔ¼ö(¿ÖÀÖ´ÂÁö¸ğ¸£°ÚÀ½)
+{//***ë§Œë“  ë©”ì„¸ì§€í¬ë§·ì„ ì„œë²„ë¡œ ë³´ë‚´ëŠ” í•¨ìˆ˜(ì™œìˆëŠ”ì§€ëª¨ë¥´ê² ìŒ)
 	char buffer[100];
 	//printf("[client] : ");
 	//scanf("%s", say);
-	send(clientsock, wholeMessage, (int)strlen(wholeMessage) + 1, 0);//¹ß½Å
-	int strleng = recv(clientsock, buffer, 99, 0);//¼ö½Å
+	send(clientsock, wholeMessage, (int)strlen(wholeMessage) + 1, 0);//ë°œì‹ 
+	int strleng = recv(clientsock, buffer, 99, 0);//ìˆ˜ì‹ 
 	return buffer;
 }
 char* DBManager::Login(char* id, char* password)
-{//·Î±×ÀÎÀ» ¸Ş¼¼ÁöÆ÷¸Ë´ë·Î ¸¸µå´Â ÇÔ¼ö(¿ÖÀÖ´ÂÁö¸ğ¸£°ÚÀ½)
+{//ë¡œê·¸ì¸ì„ ë©”ì„¸ì§€í¬ë§·ëŒ€ë¡œ ë§Œë“œëŠ” í•¨ìˆ˜(ì™œìˆëŠ”ì§€ëª¨ë¥´ê² ìŒ)
 	char message[1024];
 	snprintf(message, 1024, "l|%s|%s", id, password);
 	return Login(message);
 }
 char* DBManager::Login(char* id, char* password, int* left_time)
-{//·Î±×ÀÎ
+{//ë¡œê·¸ì¸
 	char* ret_value = Login(id, password);
-	if (strcmp(ret_value, "0") == 0)//·Î±×ÀÎ½ÇÆĞ
+	if (strcmp(ret_value, "0") == 0)//ë¡œê·¸ì¸ì‹¤íŒ¨
 		return "false";
 	char* minute;
 	char* seconds;
@@ -104,24 +104,24 @@ char* DBManager::Login(char* id, char* password, int* left_time)
 	return ret_value;
 }
 DBManager* DBManager::GetInstance()
-{//½Ì±ÛÅæ~~~~~~
+{//ì‹±ê¸€í†¤~~~~~~
 	if (instance)
 		return instance;
 	else
 		return instance = new DBManager();
 }
 DBManager::DBManager()
-{//µğºñ¿Í ¼ÒÄÏÅë½Å
+{//ë””ë¹„ì™€ ì†Œì¼“í†µì‹ 
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 	{
-		printf("ÃÊ±âÈ­ ½ÇÆĞ\n");
+		printf("ì´ˆê¸°í™” ì‹¤íŒ¨\n");
 		exit(1);
 	}
 	clientsock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
 	if (clientsock == INVALID_SOCKET)
 	{
-		printf("¼ÒÄÏ »ı¼º ½ÇÆĞ\n");
+		printf("ì†Œì¼“ ìƒì„± ì‹¤íŒ¨\n");
 		exit(1);
 	}
 	memset(&sockinfo, 0, sizeof(sockinfo));
@@ -131,7 +131,7 @@ DBManager::DBManager()
 	sockinfo.sin_addr.s_addr = inet_addr(IP);
 	if (connect(clientsock, (SOCKADDR*)&sockinfo, sizeof(sockinfo)) == SOCKET_ERROR)
 	{
-		printf(" ¼­¹ö Á¢¼Ó ½ÇÆĞ ");
+		printf(" ì„œë²„ ì ‘ì† ì‹¤íŒ¨ ");
 		exit(1);
 	}
 }
@@ -145,59 +145,59 @@ DBManager::~DBManager()
 }
 
 bool DBManager::Recharge(char * id, char * time)
-{//ÃæÀü
+{//ì¶©ì „
 	char message[100];
 	char buffer[100];
-	sprintf(message, "r|%s|%s", id, time);//¸Ş¼¼ÁöÆ÷¸Ë
-	send(clientsock, message, (int)strlen(message) + 1, 0);//¹ß½Å
-	int strleng = recv(clientsock, buffer, 99, 0);//¼ö½Å
+	sprintf(message, "r|%s|%s", id, time);//ë©”ì„¸ì§€í¬ë§·
+	send(clientsock, message, (int)strlen(message) + 1, 0);//ë°œì‹ 
+	int strleng = recv(clientsock, buffer, 99, 0);//ìˆ˜ì‹ 
 
 	if (strcmp(buffer, "0") == 0)
-		return false;//ÃæÀü½ÇÆĞ(¾ÆÀÌµğ°¡ Æ²¸²)
+		return false;//ì¶©ì „ì‹¤íŒ¨(ì•„ì´ë””ê°€ í‹€ë¦¼)
 	else
-		return true;//ÃæÀü¼º°ø
+		return true;//ì¶©ì „ì„±ê³µ
 }
 char* DBManager::ShowTime(char*id)
-{//½Ã°£º¸¿©ÁÖ±â
+{//ì‹œê°„ë³´ì—¬ì£¼ê¸°
 	char message[100];
 	char bufer[100] = { "" };
 	sprintf(message, "lp|%s", id);
-	send(clientsock, message, (int)strlen(message) + 1, 0);//¹ß½Å
-	int strleng = recv(clientsock, bufer, sizeof(bufer) - 1, 0);//¼ö½Å
+	send(clientsock, message, (int)strlen(message) + 1, 0);//ë°œì‹ 
+	int strleng = recv(clientsock, bufer, sizeof(bufer) - 1, 0);//ìˆ˜ì‹ 
 	return bufer;
 }
 bool DBManager::ChangePassword(char*m)
-{//ºñ¹Ğ¹øÈ£¹Ù²Ù±â
+{//ë¹„ë°€ë²ˆí˜¸ë°”ê¾¸ê¸°
 	char mess[1024] = { "" };
 	char bufer[100] = { "" };
 	strcpy(mess, m);
-	send(clientsock, mess, (int)strlen(mess) + 1, 0);//¹ß½Å
-	int strleng = recv(clientsock, bufer, sizeof(bufer) - 1, 0);//¼ö½Å
+	send(clientsock, mess, (int)strlen(mess) + 1, 0);//ë°œì‹ 
+	int strleng = recv(clientsock, bufer, sizeof(bufer) - 1, 0);//ìˆ˜ì‹ 
 	if (bufer[0] == '0')
-		return false;//¾ÆÀÌµğ°¡ Æ²·È°Å³ª ºñ¹Ğ¹øÈ£°¡Æ²·È°Å³ª
+		return false;//ì•„ì´ë””ê°€ í‹€ë ¸ê±°ë‚˜ ë¹„ë°€ë²ˆí˜¸ê°€í‹€ë ¸ê±°ë‚˜
 	else
-		return true;//¼º°ø
+		return true;//ì„±ê³µ
 }
 char* DBManager::Question(char*m)
-{//ºñ¹Ğ¹øÈ£È®ÀÎÁú¹®
+{//ë¹„ë°€ë²ˆí˜¸í™•ì¸ì§ˆë¬¸
 	char mess[20] = { "" };
 	char bufer[100] = { "" };
 	strcpy(mess, m);
-	send(clientsock, mess, (int)strlen(mess) + 1, 0);//¹ß½Å
-	int strleng = recv(clientsock, bufer, sizeof(bufer) - 1, 0);//¼ö½Å
+	send(clientsock, mess, (int)strlen(mess) + 1, 0);//ë°œì‹ 
+	int strleng = recv(clientsock, bufer, sizeof(bufer) - 1, 0);//ìˆ˜ì‹ 
 
-	return bufer;//Áú¹®
+	return bufer;//ì§ˆë¬¸
 }
 bool DBManager::Answer(char*m)
-{//ºñ¹Ğ¹øÈ£È®ÀÎÁú¹® Á¤´ä
+{//ë¹„ë°€ë²ˆí˜¸í™•ì¸ì§ˆë¬¸ ì •ë‹µ
 	char mess[50] = { "" };
 	char bufer[100] = { "" };
 	strcpy(mess, m);
-	send(clientsock, mess, (int)strlen(mess) + 1, 0);//¹ß½Å
-	int strleng = recv(clientsock, bufer, sizeof(bufer) - 1, 0);//¼ö½Å
+	send(clientsock, mess, (int)strlen(mess) + 1, 0);//ë°œì‹ 
+	int strleng = recv(clientsock, bufer, sizeof(bufer) - 1, 0);//ìˆ˜ì‹ 
 
 	if (bufer[0] == '0')
-		return false;//Æ²¸²
+		return false;//í‹€ë¦¼
 	else
-		return true;//¸ÂÀ½(ºñ¹Ğ¹øÈ£¹Ù²ñ)
+		return true;//ë§ìŒ(ë¹„ë°€ë²ˆí˜¸ë°”ë€œ)
 }
