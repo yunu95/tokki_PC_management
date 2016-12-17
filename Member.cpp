@@ -3,8 +3,8 @@
 
 Member::Member(std::string id, std::string nowtime)
 {
-	this->id = id;//¾ÆÀÌµğ
-	this->nowtime = nowtime;//½ÃÀÛÇÑ½Ã°£
+	this->id = id;//ì•„ì´ë””
+	this->nowtime = nowtime;//ì‹œì‘í•œì‹œê°„
 }
 
 
@@ -19,7 +19,7 @@ void Member::AbortUsing(const PC& target)
 }
 
 void Member::SetLeftTime(const int& time) {
-	this->left_time = time;//³²Àº½Ã°£
+	this->left_time = time;//ë‚¨ì€ì‹œê°„
 }
 
 std::string Member::GetIdentifier()

@@ -26,7 +26,7 @@ PCManager* PCManager::GetInstance() {
 		// 2. constructor exists in private field
 		return instance = new PCManager();
 }
-// ½Ì±ÛÅæ ÆĞÅÏÀ» ±¸ÇöÇÏ´Â ºÎºĞÀÔ´Ï´Ù. 
+// ì‹±ê¸€í†¤ íŒ¨í„´ì„ êµ¬í˜„í•˜ëŠ” ë¶€ë¶„ì…ë‹ˆë‹¤. 
 
 // initiates all the commands needed in terminal.
 PCManager::PCManager()
@@ -37,12 +37,12 @@ PCManager::PCManager()
 	commandsList.push_back(std::string("Quit(q)"));
 
 
-	// PC °´Ã¼´Â ÀÌ¹Ì »ı¼ºµÈ »óÅÂ°ÚÁö¿ä. 100°³°¡ ÀÖ´Ù°í °¡Á¤ÇÏ°í º¤ÅÍ ¾È¿¡ Áı¾î³Ö½À´Ï´Ù.
+	// PC ê°ì²´ëŠ” ì´ë¯¸ ìƒì„±ëœ ìƒíƒœê² ì§€ìš”. 100ê°œê°€ ìˆë‹¤ê³  ê°€ì •í•˜ê³  ë²¡í„° ì•ˆì— ì§‘ì–´ë„£ìŠµë‹ˆë‹¤.
 	for (int i = 0; i < 100; i++)
 		pcs.push_back(new PC(i));
 
-	//¼Õ´ÔÀÌ ¸â¹öÀÎ °æ¿ì´Â µ¥ÀÌÅÍ º£ÀÌ½º¿¡¼­ ºÒ·¯¿À°Ô µË´Ï´Ù.
-	//-------¼ÒÄÏ ¶óÀÌºê·¯¸® ºÒ·¯¿À±â(?)--------
+	//ì†ë‹˜ì´ ë©¤ë²„ì¸ ê²½ìš°ëŠ” ë°ì´í„° ë² ì´ìŠ¤ì—ì„œ ë¶ˆëŸ¬ì˜¤ê²Œ ë©ë‹ˆë‹¤.
+	//-------ì†Œì¼“ ë¼ì´ë¸ŒëŸ¬ë¦¬ ë¶ˆëŸ¬ì˜¤ê¸°(?)--------
 	int retval = WSAStartup(MAKEWORD(2, 2), &wsaData);
 	if (retval != 0)
 	{
@@ -50,7 +50,7 @@ PCManager::PCManager()
 	}
 	//-------------------------------------------
 
-	//----------¼ÒÄÏ »ı¼º--------------
+	//----------ì†Œì¼“ ìƒì„±--------------
 	serv_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (serv_sock == SOCKET_ERROR)
 	{
@@ -58,13 +58,13 @@ PCManager::PCManager()
 	}
 	//-----------------------------------
 
-	//--------¼­¹ö(ÀÚ½Å)ÀÇ ¼ÒÄÏ Á¤º¸ ÀÔ·Â------------
-	serv_addr.sin_family = AF_INET;               // IP »ç¿ë
-	serv_addr.sin_port = htons(80);            // Æ÷Æ® 4000¹ø
-	serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);   // ÁÖ¼Ò´Â ¾Ë¾Æ¼­ Ã£±â
+	//--------ì„œë²„(ìì‹ )ì˜ ì†Œì¼“ ì •ë³´ ì…ë ¥------------
+	serv_addr.sin_family = AF_INET;               // IP ì‚¬ìš©
+	serv_addr.sin_port = htons(80);            // í¬íŠ¸ 4000ë²ˆ
+	serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);   // ì£¼ì†ŒëŠ” ì•Œì•„ì„œ ì°¾ê¸°
 													 //------------------------------------------------
 
-													 //-----------ÀÎÅÍ³İ¿¡ ¿¬°á---------------------
+													 //-----------ì¸í„°ë„·ì— ì—°ê²°---------------------
 	retval = bind(serv_sock, (SOCKADDR*)&serv_addr, sizeof(SOCKADDR));
 	if (retval == SOCKET_ERROR)
 	{
@@ -72,19 +72,19 @@ PCManager::PCManager()
 	}
 	//--------------------------------------------
 
-	//-----------´ë±âÀÎ¿ø ¼³Á¤-----------------
-	listen(serv_sock, 5);      // 5¸í±îÁö¸¸ ´ë±âÇÒ ¼ö ÀÖ°Ô ÇÔ...
+	//-----------ëŒ€ê¸°ì¸ì› ì„¤ì •-----------------
+	listen(serv_sock, 5);      // 5ëª…ê¹Œì§€ë§Œ ëŒ€ê¸°í•  ìˆ˜ ìˆê²Œ í•¨...
 							   //-------------------------------------------
 	int size = sizeof(SOCKADDR_IN);
 
 	accept_thread = std::thread(&PCManager::KeepAccepting, this);
 }
-// ¿©±â´Â ÇÁ·Î±×·¥ÀÌ ½ÇÇàµÇ´Â °ø°£ÀÌ ¾Æ´Ô. ´ÜÁö ÇÊµåÀÏ »Ó
+// ì—¬ê¸°ëŠ” í”„ë¡œê·¸ë¨ì´ ì‹¤í–‰ë˜ëŠ” ê³µê°„ì´ ì•„ë‹˜. ë‹¨ì§€ í•„ë“œì¼ ë¿
 
 PCManager::~PCManager()
 {
 	accept_thread.join();
-	//----------¼ÒÄÏ ´İÀ½---------------
+	//----------ì†Œì¼“ ë‹«ìŒ---------------
 	//for (auto each : RecieveThreads)
 	//	each.join();
 	for (auto each : clnt_socks)
@@ -92,7 +92,7 @@ PCManager::~PCManager()
 	closesocket(serv_sock);
 	//-----------------------------------
 
-	//-------¶óÀÌºê·¯¸® ÇØÁ¦(?)---------
+	//-------ë¼ì´ë¸ŒëŸ¬ë¦¬ í•´ì œ(?)---------
 	WSACleanup();
 	//----------------------------------
 }
@@ -102,46 +102,46 @@ bool PCManager::QueryNextAction() {
 	for (string each : commandsList) {
 		cout << each;
 		cout << ",";
-	} // commandsList Ãâ·Â
+	} // commandsList ì¶œë ¥
 
 	cout << "\n";
 	string command;
 	getline(cin, command);
 	for (string each : commandsList)
 	{
-		// ÀÔ·ÂµÈ ¸í·É¾î¸¦ ¸ğµÎ ¼Ò¹®ÀÚ·Î ¹Ù²ãÁØ´Ù.
+		// ì…ë ¥ëœ ëª…ë ¹ì–´ë¥¼ ëª¨ë‘ ì†Œë¬¸ìë¡œ ë°”ê¿”ì¤€ë‹¤.
 		for (string::iterator EachChar = command.begin(); EachChar < command.end(); EachChar++)
 			*EachChar = tolower(*EachChar);
 
-		// Ä¿¸Çµå¿¡ µû¶ó ÇÊ¿äÇÑ ÇÔ¼ö¸¦ È£ÃâÇÑ´Ù.
+		// ì»¤ë§¨ë“œì— ë”°ë¼ í•„ìš”í•œ í•¨ìˆ˜ë¥¼ í˜¸ì¶œí•œë‹¤.
 
 		if (command == "rm") {
 			//RechargeTime(const Member& target, const float& seconds)
 			char id[100];
 			char time[100];
-			cout << "´ë»ó ¾ÆÀÌµğ¸¦ ÀÔ·ÂÇÏ½Ã¿À\n";
+			cout << "ëŒ€ìƒ ì•„ì´ë””ë¥¼ ì…ë ¥í•˜ì‹œì˜¤\n";
 			scanf("%s", id);
-			cout << "¸îºĞ ÃæÀüÇÒÁö ÀÔ·ÂÇÏ½Ã¿À.\n";
+			cout << "ëª‡ë¶„ ì¶©ì „í• ì§€ ì…ë ¥í•˜ì‹œì˜¤.\n";
 			scanf("%s", time);
 			if (DBManager::GetInstance()->Recharge(id, time))
 			{
-				cout << "ÃæÀü ¿Ï·á!\n";
+				cout << "ì¶©ì „ ì™„ë£Œ!\n";
 				return true;
 			}
 			else
 			{
-				cout << "ÃæÀü ½ÇÆĞ. ¾ÆÀÌµğ¸¦ ÀçÈ®ÀÎÇÏ½Ã¿À.\n";
+				cout << "ì¶©ì „ ì‹¤íŒ¨. ì•„ì´ë””ë¥¼ ì¬í™•ì¸í•˜ì‹œì˜¤.\n";
 				return false;
 			}
 		}
 
 		if (command == "s")
 		{
-			//PC »óÅÂÈ®ÀÎÀº ÇöÀç PC¹æÀÇ pcµé Áß ¸î ´ë°¡ ÄÑÁ® ÀÖ°í ¸î´ë°¡ ²¨Á® ÀÖ´ÂÁö, -  is_power_on
-			//¶Ç ¸î ´ë°¡ »ç¿ëÁßÀÎÁö pc¹æÀÇ »óÅÂ¸¦ º¸¿©ÁØ´Ù. - is_active
-			// ÀÌÅÍ·¹ÀÌÅÍ·Î º¤ÅÍ¿¡¼­ ½Ï ´Ù ÈÈÀº µÚ º¯¼ö¿¡ ÀúÀåÇÕ´Ï´Ù.
+			//PC ìƒíƒœí™•ì¸ì€ í˜„ì¬ PCë°©ì˜ pcë“¤ ì¤‘ ëª‡ ëŒ€ê°€ ì¼œì ¸ ìˆê³  ëª‡ëŒ€ê°€ êº¼ì ¸ ìˆëŠ”ì§€, -  is_power_on
+			//ë˜ ëª‡ ëŒ€ê°€ ì‚¬ìš©ì¤‘ì¸ì§€ pcë°©ì˜ ìƒíƒœë¥¼ ë³´ì—¬ì¤€ë‹¤. - is_active
+			// ì´í„°ë ˆì´í„°ë¡œ ë²¡í„°ì—ì„œ ì‹¹ ë‹¤ í›‘ì€ ë’¤ ë³€ìˆ˜ì— ì €ì¥í•©ë‹ˆë‹¤.
 
-			LoadPCinfos(); // PCÀÇ °³¼ö¸¦ º¸¿© Áİ´Ï´Ù. 
+			LoadPCinfos(); // PCì˜ ê°œìˆ˜ë¥¼ ë³´ì—¬ ì¤ë‹ˆë‹¤. 
 
 			int On_count = 0;
 			int OFF_count = 0;
@@ -158,9 +158,9 @@ bool PCManager::QueryNextAction() {
 					active_count++;
 			}
 
-			cout << "ÇöÀç ÄÑÁ® ÀÖ´Â PCÀÇ ´ë¼ö´Â " << On_count << " ´ë ÀÔ´Ï´Ù." << endl;
-			cout << "ÇöÀç ²¨Á® ÀÖ´Â PCÀÇ ´ë¼ö´Â " << OFF_count << " ´ë ÀÔ´Ï´Ù." << endl;
-			cout << "ÇöÀç »ç¿ëµÇ°í ÀÖ´Â PCÀÇ ´ë¼ö´Â " << active_count << " ´ë ÀÔ´Ï´Ù." << endl;
+			cout << "í˜„ì¬ ì¼œì ¸ ìˆëŠ” PCì˜ ëŒ€ìˆ˜ëŠ” " << On_count << " ëŒ€ ì…ë‹ˆë‹¤." << endl;
+			cout << "í˜„ì¬ êº¼ì ¸ ìˆëŠ” PCì˜ ëŒ€ìˆ˜ëŠ” " << OFF_count << " ëŒ€ ì…ë‹ˆë‹¤." << endl;
+			cout << "í˜„ì¬ ì‚¬ìš©ë˜ê³  ìˆëŠ” PCì˜ ëŒ€ìˆ˜ëŠ” " << active_count << " ëŒ€ ì…ë‹ˆë‹¤." << endl;
 
 			cin.clear();
 			cin.ignore(INT_MAX, '\n');
@@ -182,12 +182,12 @@ void PCManager::Initialize() {
 
 void PCManager::RechargeTime(const Member& target, const float& seconds)
 {
-	// ¸â¹ö ¾ÆÀÌµğ¸¦ ¿ä±¸ÇÏ°í, ¾ÆÀÌµğ Á¤º¸¸¦ DB¿¡¼­ ºÒ·¯¿É´Ï´Ù.
+	// ë©¤ë²„ ì•„ì´ë””ë¥¼ ìš”êµ¬í•˜ê³ , ì•„ì´ë”” ì •ë³´ë¥¼ DBì—ì„œ ë¶ˆëŸ¬ì˜µë‹ˆë‹¤.
 
 	// below here should be placed socket programming things
 	// which means, Back to work! sung yeon!
 
-	// Á¤º¸¿¡ ÀÖ´Â left_time¿¡ seconds¸¦ ´õÇØ¼­ °»½ÅÇÕ´Ï´Ù.
+	// ì •ë³´ì— ìˆëŠ” left_timeì— secondsë¥¼ ë”í•´ì„œ ê°±ì‹ í•©ë‹ˆë‹¤.
 }
 
 void PCManager::LoadPCinfos()
@@ -195,12 +195,12 @@ void PCManager::LoadPCinfos()
 	using namespace std;
 	string inputString;
 
-	ifstream inputFile("PCinfos.txt"); // PCinfos ¿¡´Â PC¹æ¿¡ ÀÖ´Â PCµéÀÇ Á¤º¸°¡ ´ã°ÜÀÖ½¿´Ù. 
+	ifstream inputFile("PCinfos.txt"); // PCinfos ì—ëŠ” PCë°©ì— ìˆëŠ” PCë“¤ì˜ ì •ë³´ê°€ ë‹´ê²¨ìˆìŠ´ë‹¤. 
 
 	while (!inputFile.eof())
 	{
 		inputFile >> inputString;
-		cout << "PCµéÀÇ °³¼ö : " << inputString << endl;
+		cout << "PCë“¤ì˜ ê°œìˆ˜ : " << inputString << endl;
 	}
 	inputFile.close();
 }
@@ -230,8 +230,8 @@ void PCManager::KeepAccepting()
 					break;
 				}
 				buf[recvsize] = '\0';
-				// ¸Ş¼¼Áö ¹Ş´Â°Í±îÁö ½º·¹µå·Î ±¸Çö
-				// ¿©±â¼­ºÎÅÍ´Â Äİ
+				// ë©”ì„¸ì§€ ë°›ëŠ”ê²ƒê¹Œì§€ ìŠ¤ë ˆë“œë¡œ êµ¬í˜„
+				// ì—¬ê¸°ì„œë¶€í„°ëŠ” ì½œ
 				PCManager::GetInstance()->DealWithMessage(ClientSocket, client_address, &pc, buf);
 
 
@@ -244,13 +244,13 @@ void PCManager::KeepAccepting()
 			exit(0);
 		}
 		//----------------------------------------------------------------------
-		printf("Å¬¶óÀÌ¾ğÆ® Á¢¼Ó\n");
+		printf("í´ë¼ì´ì–¸íŠ¸ ì ‘ì†\n");
 		printf("IP : %s, Port : %d\n", inet_ntoa(clnt_addr.sin_addr), clnt_addr.sin_port);
 	}
 }
 
 bool PCManager::DealWithMessage(SOCKET ClientSocket, SOCKADDR *client_address, PC** pc, char* message)
-{//***¼­¹ö¿Í ¸Ş¼¼Áö¸¦ ÁÖ°í¹Ş´ÂºÎºĞ
+{//***ì„œë²„ì™€ ë©”ì„¸ì§€ë¥¼ ì£¼ê³ ë°›ëŠ”ë¶€ë¶„
 	char response[100];
 
 	printf("message from client : %s\n", message);
@@ -275,7 +275,7 @@ bool PCManager::DealWithMessage(SOCKET ClientSocket, SOCKADDR *client_address, P
 		}
 	}
 	else if (strncmp(message, "login     ", 10) == 0)
-	{//***·Î±×ÀÎ
+	{//***ë¡œê·¸ì¸
 		char* id = message + 10;
 		char* pswd = nullptr;
 		for (char* i = message + 10; true; i++)
@@ -295,23 +295,23 @@ bool PCManager::DealWithMessage(SOCKET ClientSocket, SOCKADDR *client_address, P
 		int leftsecs;
 		char * temp = DBManager::GetInstance()->Login(id, pswd, &leftsecs);
 		if (strcmp(temp, "false") != 0)
-		{//***·Î±×ÀÎ¼º°ø
+		{//***ë¡œê·¸ì¸ì„±ê³µ
 			time_t curtime;
-			struct tm *curtm;//***ÇöÀç½Ã°£À» ´ãÀ» ½Ã°£±¸Á¶Ã¼
+			struct tm *curtm;//***í˜„ì¬ì‹œê°„ì„ ë‹´ì„ ì‹œê°„êµ¬ì¡°ì²´
 			curtime = time(NULL);
-			curtm = localtime(&curtime);//***±× Áö¿ªÀÇ ÇöÀç ½Ã°£À» ±¸Á¶Ã¼¿¡ ´ãÀ½
+			curtm = localtime(&curtime);//***ê·¸ ì§€ì—­ì˜ í˜„ì¬ ì‹œê°„ì„ êµ¬ì¡°ì²´ì— ë‹´ìŒ
 
-										//***ÇöÀç½Ã°£À» ½Ã¿Í ºĞÀ¸·Î ¸ÂÃã (½Ã°£:ºĞ)
+										//***í˜„ì¬ì‹œê°„ì„ ì‹œì™€ ë¶„ìœ¼ë¡œ ë§ì¶¤ (ì‹œê°„:ë¶„)
 			std::string nowtime = std::to_string(curtm->tm_hour) + ":" + std::to_string(curtm->tm_min);
 
 			(*pc)->StartUsing(new Member(id, nowtime));
-			(*pc)->GetUser()->SetLeftTime(leftsecs);//***À¯ÀúÀÇ ³²Àº ½Ã°£À» À¯Àú°´Ã¼¿¡ ³ÖÀ½
+			(*pc)->GetUser()->SetLeftTime(leftsecs);//***ìœ ì €ì˜ ë‚¨ì€ ì‹œê°„ì„ ìœ ì €ê°ì²´ì— ë„£ìŒ
 
 			printf("Send retval : %d\n", send(ClientSocket, temp, 100, 0));
 			printf("Send retval : %d\n", send(ClientSocket, temp, 100, 0));
 		}
 		else
-		{//***·Î±×ÀÎ ½ÇÆĞ
+		{//***ë¡œê·¸ì¸ ì‹¤íŒ¨
 
 			send(ClientSocket, temp, 20, 0);
 			send(ClientSocket, temp, 20, 0);
@@ -320,140 +320,140 @@ bool PCManager::DealWithMessage(SOCKET ClientSocket, SOCKADDR *client_address, P
 
 	}
 	else if (message[0] == 'o')
-	{//***À½½ÄÁÖ¹®
+	{//***ìŒì‹ì£¼ë¬¸
 		strtok(message, "|");
-		char*order = strtok(NULL, "|");//***ÁÖ¹®ÇÑ À½½ÄÀÇ ¹øÈ£
-		char*number = strtok(NULL, "|");//***ÀÚ¸®¹øÈ£
+		char*order = strtok(NULL, "|");//***ì£¼ë¬¸í•œ ìŒì‹ì˜ ë²ˆí˜¸
+		char*number = strtok(NULL, "|");//***ìë¦¬ë²ˆí˜¸
 		char name[30];
 		switch (atoi(order))
 		{
 		case 1:
-			strcpy(name, "³»°¡ Åä³¢¶ó¸é");
+			strcpy(name, "ë‚´ê°€ í† ë¼ë¼ë©´");
 			break;
 		case 2:
-			strcpy(name, "Åä³¢°£ ¼ø´ë");
+			strcpy(name, "í† ë¼ê°„ ìˆœëŒ€");
 			break;
 		case 3:
-			strcpy(name, "»êÅä³¢ Á¤½Ä");
+			strcpy(name, "ì‚°í† ë¼ ì •ì‹");
 			break;
 		case 4:
-			strcpy(name, "Äİ-¶ó");
+			strcpy(name, "ì½œ-ë¼");
 			break;
 		case 5:
-			strcpy(name, "Åä³¢ ºÒ°í±â¹ö°Å");
+			strcpy(name, "í† ë¼ ë¶ˆê³ ê¸°ë²„ê±°");
 			break;
 		case 6:
-			strcpy(name, "ºñÅ¸¹Î¿öÅÍ");
+			strcpy(name, "ë¹„íƒ€ë¯¼ì›Œí„°");
 			break;
 		case 7:
-			strcpy(name, "Åä³¢µ¤¹ä");
+			strcpy(name, "í† ë¼ë®ë°¥");
 			break;
 		}
-		std::cout << number << "¹ø ´ÔÀÌ " << name << "À» ÁÖ¹®ÇÏ¼Ì½À´Ï´Ù." << std::endl;
+		std::cout << number << "ë²ˆ ë‹˜ì´ " << name << "ì„ ì£¼ë¬¸í•˜ì…¨ìŠµë‹ˆë‹¤." << std::endl;
 
 	}
 	else if (strncmp(message, "cs", 2) == 0)
-	{//***»óÅÂ Ç¥½Ã
+	{//***ìƒíƒœ í‘œì‹œ
 		strtok(message, "|");
-		char*t = strtok(NULL, "|");//***ÇöÀç½Ã°£(»óÅÂÇ¥½Ã±â´ÉÀ» ´­·¶À»¶§ÀÇ ½Ã°£)
+		char*t = strtok(NULL, "|");//***í˜„ì¬ì‹œê°„(ìƒíƒœí‘œì‹œê¸°ëŠ¥ì„ ëˆŒë €ì„ë•Œì˜ ì‹œê°„)
 
 		char nowtime[6] = { '\0' };
-		strcpy(nowtime, (*pc)->GetUser()->GetNowTime());//***À¯Àú°¡ ÄÄÇ»ÅÍ¸¦ Ä×À»¶§ÀÇ ½Ã°£À» °¡Á®¿È
+		strcpy(nowtime, (*pc)->GetUser()->GetNowTime());//***ìœ ì €ê°€ ì»´í“¨í„°ë¥¼ ì¼°ì„ë•Œì˜ ì‹œê°„ì„ ê°€ì ¸ì˜´
 
-		char lt[20];//***³²Àº½Ã°£ ´ã´Â º¯¼ö
-					//***À¯ÀúÀÇ ³²Àº ½Ã°£À» µğºñ¿¡¼­ °¡Á®¿È
+		char lt[20];//***ë‚¨ì€ì‹œê°„ ë‹´ëŠ” ë³€ìˆ˜
+					//***ìœ ì €ì˜ ë‚¨ì€ ì‹œê°„ì„ ë””ë¹„ì—ì„œ ê°€ì ¸ì˜´
 		strcpy(lt, DBManager::GetInstance()->ShowTime((char*)((*pc)->GetUser()->GetIdentifier().c_str())));
 
-		int left = atoi(strtok(lt, ":")) * 60 + atoi(strtok(NULL, ":"));//***³²Àº½Ã°£À» ºĞÀ¸·Î È¯»ê
+		int left = atoi(strtok(lt, ":")) * 60 + atoi(strtok(NULL, ":"));//***ë‚¨ì€ì‹œê°„ì„ ë¶„ìœ¼ë¡œ í™˜ì‚°
 
-		(*pc)->GetUser()->SetLeftTime(left);//***À¯ÀúÀÇ ³²Àº½Ã°£¿¡ »ğÀÔ
+		(*pc)->GetUser()->SetLeftTime(left);//***ìœ ì €ì˜ ë‚¨ì€ì‹œê°„ì— ì‚½ì…
 
-		std::string dt = Timespan(nowtime, t);//***Áö±İ±îÁö»ç¿ëÇÑ½Ã°£(Timespan ÇÔ¼ö : ÇöÀç½Ã°£-Ã³À½½ÃÀÛÇÑ½Ã°£)
+		std::string dt = Timespan(nowtime, t);//***ì§€ê¸ˆê¹Œì§€ì‚¬ìš©í•œì‹œê°„(Timespan í•¨ìˆ˜ : í˜„ì¬ì‹œê°„-ì²˜ìŒì‹œì‘í•œì‹œê°„)
 		char *Dt = (char*)dt.c_str();
-		int usingtime = atoi(strtok(Dt, ":")) * 60 + atoi(strtok(NULL, ":"));//***Áö±İ±îÁö »ç¿ëÇÑ½Ã°£À» ºĞÀ¸·Î È¯»ê
+		int usingtime = atoi(strtok(Dt, ":")) * 60 + atoi(strtok(NULL, ":"));//***ì§€ê¸ˆê¹Œì§€ ì‚¬ìš©í•œì‹œê°„ì„ ë¶„ìœ¼ë¡œ í™˜ì‚°
 
-																			 //***À¯ÀúÀÌ¸§|³²Àº½Ã°£-Áö±İ±îÁö»ç¿ëÇÑ½Ã°£ À» pcÅ¬¶óÀÌ¾ğÆ®¿¡ º¸³¿
-		if ((*pc)->GetUser()->GetLeftTime() - usingtime >= 0)//***¾ç¼ö¸é °ª ±×´ë·Îº¸³»°í
+																			 //***ìœ ì €ì´ë¦„|ë‚¨ì€ì‹œê°„-ì§€ê¸ˆê¹Œì§€ì‚¬ìš©í•œì‹œê°„ ì„ pcí´ë¼ì´ì–¸íŠ¸ì— ë³´ëƒ„
+		if ((*pc)->GetUser()->GetLeftTime() - usingtime >= 0)//***ì–‘ìˆ˜ë©´ ê°’ ê·¸ëŒ€ë¡œë³´ë‚´ê³ 
 			snprintf(response, 100, "%s|%d", (*pc)->GetUser()->GetIdentifier().c_str(), (*pc)->GetUser()->GetLeftTime() - usingtime);
-		else//***À½¼ö¸é 0À» º¸³¿
+		else//***ìŒìˆ˜ë©´ 0ì„ ë³´ëƒ„
 			snprintf(response, 100, "%s|%d", (*pc)->GetUser()->GetIdentifier().c_str(), 0);
 
 		send(ClientSocket, response, 100, 0);
 		send(ClientSocket, response, 100, 0);
 	}
 	else if (message[0] == 'm')
-	{//***È¸¿ø°¡ÀÔ
+	{//***íšŒì›ê°€ì…
 		if (DBManager::GetInstance()->Register(message))
-		{//***¼º°ø
+		{//***ì„±ê³µ
 			send(ClientSocket, "1", 99, 0);
 			send(ClientSocket, "1", 99, 0);
 		}
 		else
-		{//***½ÇÆĞ
+		{//***ì‹¤íŒ¨
 			send(ClientSocket, "000", 99, 0);
 			send(ClientSocket, "000", 99, 0);
 		}
 	}
 	else if (message[0] == 'l'&&message[1] == 'p')
-	{//***À¯ÀúÀÇ ³²Àº½Ã°£Ç¥½Ã
+	{//***ìœ ì €ì˜ ë‚¨ì€ì‹œê°„í‘œì‹œ
 		strtok(message, "|");
-		char*id = strtok(NULL, "|");//***¾ÆÀÌµğ
+		char*id = strtok(NULL, "|");//***ì•„ì´ë””
 		char left[10];
 		char time[10];
-		strcpy(left, DBManager::GetInstance()->ShowTime(id));//***³²Àº½Ã°£À» left¿¡ ´ãÀ½
-		int l = atoi(strtok(left, ":")) * 60 + atoi(strtok(NULL, ":"));//***³²Àº½Ã°£À» ºĞÀ¸·Î È¯»ê
-		sprintf(time, "%d", l);//***³²Àº½Ã°£À» char*ÇüÀ¸·Î Çüº¯È¯
+		strcpy(left, DBManager::GetInstance()->ShowTime(id));//***ë‚¨ì€ì‹œê°„ì„ leftì— ë‹´ìŒ
+		int l = atoi(strtok(left, ":")) * 60 + atoi(strtok(NULL, ":"));//***ë‚¨ì€ì‹œê°„ì„ ë¶„ìœ¼ë¡œ í™˜ì‚°
+		sprintf(time, "%d", l);//***ë‚¨ì€ì‹œê°„ì„ char*í˜•ìœ¼ë¡œ í˜•ë³€í™˜
 		send(ClientSocket, time, 10, 0);
 		send(ClientSocket, time, 10, 0);
 
 	}
 	else if (message[0] == 's')
-	{//***Á¾·á
+	{//***ì¢…ë£Œ
 		strtok(message, "|");
 		char*t = strtok(NULL, "|");
 
 		char a[6] = { '\0' };
-		strcpy(a, (*pc)->GetUser()->GetNowTime());//***Ã³À½½ÃÀÛÇÑ½Ã°£
+		strcpy(a, (*pc)->GetUser()->GetNowTime());//***ì²˜ìŒì‹œì‘í•œì‹œê°„
 
-		std::string dt = Timespan(a, t);//***Áö±İ±îÁö»ç¿ëÇÑ½Ã°£
+		std::string dt = Timespan(a, t);//***ì§€ê¸ˆê¹Œì§€ì‚¬ìš©í•œì‹œê°„
 		char *Dt = (char*)dt.c_str();
-		int usingtime = atoi(strtok(Dt, ":")) * 60 + atoi(strtok(NULL, ":"));//***Áö±İ±îÁö »ç¿ëÇÑ½Ã°£ ºĞÀ¸·Î È¯»ê
+		int usingtime = atoi(strtok(Dt, ":")) * 60 + atoi(strtok(NULL, ":"));//***ì§€ê¸ˆê¹Œì§€ ì‚¬ìš©í•œì‹œê°„ ë¶„ìœ¼ë¡œ í™˜ì‚°
 
-		DBManager::GetInstance()->Shutdown((char*)((*pc)->GetUser()->GetIdentifier().c_str()), usingtime);//***Á¾·áÃ³¸®
+		DBManager::GetInstance()->Shutdown((char*)((*pc)->GetUser()->GetIdentifier().c_str()), usingtime);//***ì¢…ë£Œì²˜ë¦¬
 		return false;
 	}
 	else if (message[0] == 'c')
-	{//***ºñ¹Ğ¹øÈ£¹Ù²Ù±â
+	{//***ë¹„ë°€ë²ˆí˜¸ë°”ê¾¸ê¸°
 
 		if (DBManager::GetInstance()->ChangePassword(message))
-		{//***¼º°ø
+		{//***ì„±ê³µ
 			send(ClientSocket, "1", 99, 0);
 			send(ClientSocket, "1", 99, 0);
 		}
 		else
-		{//***½ÇÆĞ
+		{//***ì‹¤íŒ¨
 			send(ClientSocket, "000", 99, 0);
 			send(ClientSocket, "000", 99, 0);
 		}
 	}
 	else if (message[0] == 'f'&&message[1] == 'a')
-	{//***ºñ¹Ğ¹øÈ£È®ÀÎÁú¹®
+	{//***ë¹„ë°€ë²ˆí˜¸í™•ì¸ì§ˆë¬¸
 		char question[100];
 		char tt[100];
-		strcpy(question, DBManager::GetInstance()->Question(message));//È®ÀÎÁú¹®
+		strcpy(question, DBManager::GetInstance()->Question(message));//í™•ì¸ì§ˆë¬¸
 		sprintf(tt, "%s%s", "****", question);
 		send(ClientSocket, " ", 100, 0);
 		send(ClientSocket, tt, 100, 0);
 	}
 	else if (message[0] == 'f'&&message[1] == 'r')
-	{//***ºñ¹Ğ¹øÈ£È®ÀÎÁú¹® Á¤´äÈ®ÀÎ
+	{//***ë¹„ë°€ë²ˆí˜¸í™•ì¸ì§ˆë¬¸ ì •ë‹µí™•ì¸
 		if (DBManager::GetInstance()->Answer(message))
-		{//***¸Â
+		{//***ë§
 			send(ClientSocket, "1", 99, 0);
 			send(ClientSocket, "1", 99, 0);
 		}
 		else
-		{//***Æ²
+		{//***í‹€
 			send(ClientSocket, "000", 99, 0);
 			send(ClientSocket, "000", 99, 0);
 		}
@@ -462,7 +462,7 @@ bool PCManager::DealWithMessage(SOCKET ClientSocket, SOCKADDR *client_address, P
 	return true;
 }
 std::string PCManager::Timespan(char*now, char*end)
-{//***½Ã°£»©±â! µÚ¿¡¿À´Â ÀÎÀÚ°¡ ¹«Á¶°Ç Ä¿¾ßÇÑ´Ù.
+{//***ì‹œê°„ë¹¼ê¸°! ë’¤ì—ì˜¤ëŠ” ì¸ìê°€ ë¬´ì¡°ê±´ ì»¤ì•¼í•œë‹¤.
 
  //---FORMAT---
  //now=hour:min
