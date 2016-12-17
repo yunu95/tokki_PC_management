@@ -20,15 +20,13 @@ private:
 	~PCManager();
 	// It waits for the message from pc clients.
 	void KeepAccepting();
-	void update_pcs();
 
 	// 싱글톤 패턴이기 때문에, 클래스 외부에서 함부로 객체를 만들면 안 됩니다. 따라서 생성자는 private로 선언됩니다. 
 	static PCManager* instance; // 이 클래스의 유일한 객체를 가리키는 포인터입니다.
 	std::vector<std::string> commandsList;
 	// 모든 pc들의 인스턴스들은 pcs에 들어있습니다.
 	std::vector<class PC*> pcs;
-	// 모든 Card들의 인스턴스들은 cards에 들어있습니다.
-	std::vector<class Card*> cards;
+
 	WSADATA wsaData;
 	SOCKET serv_sock;
 	SOCKADDR_IN serv_addr = { 0 };               // 초기화
@@ -40,19 +38,18 @@ private:
 	// ReceiveThreads에 들어간 스레드들은 한번 pc와 연결이 되면 그 pc들로부터 어떤 연락이 올지 계속 대기하는 스레드
 	std::vector<std::thread> RecieveThreads;
 	float PlusTime;
-	int CardNumber;
+
 public:
-	bool DealWithMessage(SOCKET ClientSocket, SOCKADDR *client_address, PC** pc,char* message);
-	std::thread Updater; // 매 초마다 LoadPCinfos()를 호출하고, 각 PC들의 상태를 업데이트하는 thread
+	bool DealWithMessage(SOCKET ClientSocket, SOCKADDR *client_address, PC** pc, char* message);
 	static PCManager *GetInstance(); // 정적 메서드로서, 클래스의 객체를 만들 때 사용합니다.
 									 //아래에 선언된 RechargeTime 메서드들를 정의하려면 method overloading에 대한 지식이 필요합니다.
-									 // 비회원 카드 이용자의 사용시간을 추가합니다.
-	void RechargeTime(Card& target, const float& seconds);
-	// 로그인하는 회원이용자의 사용시간을 추가합니다.
+
+									 // 로그인하는 회원이용자의 사용시간을 추가합니다.
 	void RechargeTime(const Member& target, const float& seconds);
 	// it initiates every initialization and activate terminal  
 	void Initialize();
 	bool QueryNextAction(); // 사용자에게 명령어를 요구하고, 입력된 명령어에 대응하는 메서드를 실행합니다.
 	void LoadPCinfos(); // PC방에 있는 PC들의 정보를 파일에서 읽어 옵니다.
-	void CheckoutCard(Card& card); // 카드를 초기화합니다. 정보는 시간뿐이니 시간을 0으로 만듭니다.
+
+	std::string Timespan(char* now, char* end);
 };

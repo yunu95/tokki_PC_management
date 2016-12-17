@@ -23,10 +23,10 @@ bool PC::StartUsing(User* user)
 
 	this->current_user = user;
 	is_active = true;
-		std::cout <<"\
+	std::cout << "\
 PC " << PC_Number << "has started!\n\
 current User : " << current_user->GetIdentifier().c_str() << "\n";
-		return true;
+	return true;
 }
 //사용자가 컴퓨터를 사용함으로서 사용상태의 멤버 변수인
 //is_active 가 true가 된다.
@@ -40,19 +40,23 @@ bool PC::StopUsing() {
 
 bool PC::AbortUsing()
 {
-	return true; // 수정 필요
+	return true;
 }
 
 bool PC::TurnOnComputer() {
 	std::cout << "\nPC " << PC_Number << " Has been turned on!";
 	is_power_on = true;
+	is_active = true;
 	return true;
 }
 //사용자가 컴퓨터의 전원을 켬으로서 전원여부의 멤버 변수인 
 //is_power_on 가 true가 된다.
 
-bool PC::TurnOffComputer() {
+bool PC::TurnOffComputer()
+{//***컴퓨터끌때 변수들다 false로 바꿈
+	std::cout << "\nPC " << PC_Number << " Has been turned off!" << std::endl;
 	is_power_on = false;
+	is_active = false;
 	return true;
 }
 

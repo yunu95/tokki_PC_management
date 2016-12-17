@@ -142,7 +142,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Card.cpp" />
     <ClCompile Include="DBManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Member.cpp" />
@@ -151,7 +150,6 @@
     <ClCompile Include="User.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Card.h" />
     <ClInclude Include="DBManager.h" />
     <ClInclude Include="Member.h" />
     <ClInclude Include="PC.h" />
