@@ -2,9 +2,9 @@
 
 Socket::Socket()
 {
-	
+
 }
-Socket::Socket(int argc,char* argv)
+Socket::Socket(int argc, char* argv)
 {//reset val
 	if (argc != 2) {
 		printf("Usage : ./program_name <port>");
@@ -25,7 +25,7 @@ Socket::Socket(int argc,char* argv)
 	FD_ZERO(&reads);
 	FD_SET(serv_sock, &reads);
 	fd_max = serv_sock;
-	
+
 	db.Connect();
 }
 
@@ -37,7 +37,7 @@ void Socket::Start()
 		timeout.tv_sec = 5;
 		timeout.tv_usec = 50000;
 
-		if ((fd_num = select(fd_max + 1, &cpy_reads, 0, 0, &timeout)) == -1) 
+		if ((fd_num = select(fd_max + 1, &cpy_reads, 0, 0, &timeout)) == -1)
 		{//check who is changed!
 			printf("fd_num : %d\n", fd_num);
 			perror("select() error");
@@ -66,86 +66,135 @@ void Socket::Start()
 				}
 				else
 				{
-                    char *command;
-					memset(buf,'\0',1024);
+					char *command;
+					memset(buf, '\0', 1024);
 					str_len = read(i, buf, BUF_SIZE);
-					printf("buf : %s strlen : %d\n",buf,str_len);
-					command=strtok(buf,"|");
-					
+					printf("buf : %s strlen : %d\n", buf, str_len);
+					command = strtok(buf, "|");
+
 					if (str_len <= 0)
 					{//receive close signal
 						FD_CLR(i, &reads);
 						close(i);
 						printf("close client : %d \n", i);
 					}
-					else if(strcmp(command,"l")==0)
+					else if (strcmp(command, "l") == 0)
 					{//log in
-                        char *id=strtok(NULL,"|");
-                        char *psw=strtok(NULL,"|");
+						char *id = strtok(NULL, "|");
+						char *psw = strtok(NULL, "|");
 						char *result;
-						if(result=db.login(id,psw))
-							write(i,result,strlen(result));
+						if (result = db.login(id, psw))
+							write(i, result, strlen(result));
 						else
-							write(i,"0",3);
+							write(i, "0", 3);
 					}
-					else if(strcmp(command,"m")==0)
+					else if (strcmp(command, "m") == 0)
 					{//membership(register)
-						char *name=strtok(NULL,"|");
-						int age=atoi(strtok(NULL,"|"));
-						char *phonenum=strtok(NULL,"|");
-						char *id=strtok(NULL,"|");
-						char *password=strtok(NULL,"|");
-						char *psw_question=strtok(NULL,"|");
-						char *psw_answer=strtok(NULL,"|");
-						char *email=strtok(NULL,"|");
-						
-						if(db.membership(name,age,phonenum,id,password,psw_question,psw_answer,email))
+						char *name = strtok(NULL, "|");
+						int age = atoi(strtok(NULL, "|"));
+						char *phonenum = strtok(NULL, "|");
+						char *id = strtok(NULL, "|");
+						char *password = strtok(NULL, "|");
+						char *psw_question = strtok(NULL, "|");
+						char *psw_answer = strtok(NULL, "|");
+						char *email = strtok(NULL, "|");
+
+						cout << "name : " << name << endl << "age : " << age << endl << "phonenum : " << phonenum << endl;
+						cout << "id : " << id << endl << "password : " << password << endl << "psw_question : " << psw_question << endl;
+						cout << "psw_answer : " << psw_answer << endl << "email : " << email << endl;
+
+						if (db.membership(name, age, phonenum, id, password, psw_question, psw_answer, email))
 						{
-							write(i,"1",5);
+							write(i, "1", 5);
 						}
 						else
-							write(i,"0",6);
+							write(i, "0", 6);
 					}
-					else if(strcmp(command,"r")==0)
+					else if (strcmp(command, "r") == 0)
 					{//recharge
-						char *id=strtok(NULL,"|");
-						int rc=atoi(strtok(NULL,"|"));
-						printf("id : %s  rc : %d\n",id,rc );
+						char *id = strtok(NULL, "|");
+						int rc = atoi(strtok(NULL, "|"));
+						printf("id : %s  rc : %d\n", id, rc);
 						char *result;
-						if(result=db.recharge(id,rc))
+						if (result = db.recharge(id, rc))
 						{
-							write(i,result,strlen(result));
+							write(i, result, strlen(result));
 						}
 						else
-							write(i,"0",2);
+							write(i, "0", 2);
 					}
-					else if(strcmp(command,"lp")==0)
+					else if (strcmp(command, "lp") == 0)
 					{//show left time
-						char *id=strtok(NULL,"|");
-						
+						char *id = strtok(NULL, "|");
+
 						char *result;
-						if(result=db.LeftTimeShow(id))
+						if (result = db.LeftTimeShow(id))
 						{
-							write(i,result,strlen(result));
+							cout << "result : " << result << endl;
+							write(i, result, strlen(result));
 						}
 						else
-							write(i,"0",2);
+							write(i, "0", 2);
 					}
-					else if(strcmp(command,"s")==0)
+					else if (strcmp(command, "s") == 0)
 					{//shutdown
-						char *id=strtok(NULL,"|");
-						int ut=atoi(strtok(NULL,"|"));//using time
-						
-						printf("id : %s  rc : %d\n",id,ut );
-						
+						char *id = strtok(NULL, "|");
+						int ut = atoi(strtok(NULL, "|"));//using time
+
+						printf("id : %s  rc : %d\n", id, ut);
+
 						char *result;
-						
-						if(result=db.ShutDown(id,ut))
+
+						if (result = db.ShutDown(id, ut))
 						{
-							write(i,result,strlen(result));
+							write(i, result, strlen(result));
 						}
 						else
-							write(i,"0",2);
+							write(i, "0", 2);
+					}
+					else if (strcmp(command, "c") == 0)
+					{//change password
+						char *id = strtok(NULL, "|");
+						char *orign_password = strtok(NULL, "|");
+						char *new_password = strtok(NULL, "|");
+
+						printf("id : %s orign_password : %s new : %s\n", id, orign_password, new_password);
+
+						if (db.ChangePsw(id, orign_password, new_password))
+						{
+							write(i, "1", 2);
+						}
+						else
+							write(i, "0", 2);
+					}
+					else if (strcmp(command, "fa") == 0)
+					{//find password (give question)
+						char *id = strtok(NULL, "|");
+
+						char *result;
+						printf("id : %s \n", id);
+
+						if (result = db.Find_question(id))
+						{
+							write(i, result, strlen(result));
+						}
+						else
+							write(i, "0", 2);
+					}
+					else if (strcmp(command, "fr") == 0)
+					{//find password (send temporary password through e-mail)
+						char *id = strtok(NULL, "|");
+						char *answer = strtok(NULL, "|");
+
+
+						printf("id : %s answer : %s\n", id, answer);
+
+						if (db.Find_answer(id, answer))
+						{
+							write(i, "1", 2);
+						}
+						else
+							write(i, "0", 2);
 					}
 					else
 					{//echo
@@ -159,5 +208,5 @@ void Socket::Start()
 
 Socket::~Socket()
 {//close socket
-	
+
 }

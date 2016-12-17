@@ -2,9 +2,9 @@
 // server
 using namespace std;
 
-int main(int argc,char *argv[])
+int main(int argc, char *argv[])
 {
-	Socket sock(argc,argv[1]);//create socket
+	Socket sock(argc, argv[1]);//create socket
 	sock.Start();//socket start - execute command
-return 0;
+	return 0;
 }
